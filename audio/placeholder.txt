@@ -1,0 +1,5 @@
+This is a placeholder file. Due to file size limitations, actual audio files are not included.
+
+To use the lofi music player:
+1. Add MP3 files to this directory with the names specified in the README.md
+2. Or modify the lofi-tracks object in pomodoro.js to point to online audio sources

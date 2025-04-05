@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pro-To-Pro | Productivity & Procrastination Management</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/badges.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <link rel="stylesheet" href="css/robot-cursor.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header Section -->
+        <header class="app-header">
+            <div class="logo-container">
+                <h1 class="logo">Pro-To-Pro</h1>
+                <p class="tagline">From Procrastination to Productivity</p>
+            </div>
+            <div class="theme-toggle">
+                <i class="fas fa-moon"></i>
+            </div>
+        </header>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Sidebar Navigation -->
+            <nav class="sidebar">
+                <ul class="nav-links">
+                    <li class="nav-item active" data-section="tasks">
+                        <i class="fas fa-tasks"></i>
+                        <span>Tasks</span>
+                    </li>
+                    <li class="nav-item" data-section="pomodoro">
+                        <i class="fas fa-clock"></i>
+                        <span>Pomodoro</span>
+                    </li>
+                    <li class="nav-item" data-section="badges">
+                        <i class="fas fa-award"></i>
+                        <span>Badges</span>
+                    </li>
+                    <li class="nav-item" data-section="analytics">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Analytics</span>
+                    </li>
+                    <li class="nav-item" data-section="diary">
+                        <i class="fas fa-book"></i>
+                        <span>Diary</span>
+                    </li>
+                </ul>
+                <div class="user-profile">
+                    <div class="profile-pic">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="user-info">
+                        <h3 class="username">User</h3>
+                        <p class="user-streak"> 0 Day Streak</p>
+                    </div>
+                </div>
+            </nav>
+
+            <!-- Content Sections -->
+            <div class="content-container">
+                <!-- Tasks Section -->
+                <section id="tasks" class="content-section active">
+                    <div class="section-header">
+                        <h2>Smart Task Management</h2>
+                        <div class="task-actions-container">
+                            <button class="inbox-btn">
+                                <i class="fas fa-inbox"></i> Quick Capture
+                            </button>
+                            <button class="batch-btn">
+                                <i class="fas fa-layer-group"></i> Batch Tasks
+                            </button>
+                            <button class="add-task-btn">
+                                <i class="fas fa-plus"></i> New Task
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="productivity-techniques">
+                        <div class="technique-card eat-frog">
+                            <div class="technique-icon">
+                                <i class="fas fa-frog"></i>
+                            </div>
+                            <div class="technique-info">
+                                <h3>Eat The Frog</h3>
+                                <p>Tackle your most difficult task first</p>
+                            </div>
+                        </div>
+                        <div class="technique-card pareto">
+                            <div class="technique-icon">
+                                <i class="fas fa-bolt"></i>
+                            </div>
+                            <div class="technique-info">
+                                <h3>80/20 Rule</h3>
+                                <p>Focus on high-impact tasks</p>
+                            </div>
+                        </div>
+                        <div class="technique-card batching">
+                            <div class="technique-icon">
+                                <i class="fas fa-layer-group"></i>
+                            </div>
+                            <div class="technique-info">
+                                <h3>Task Batching</h3>
+                                <p>Group similar tasks for efficiency</p>
+                            </div>
+                        </div>
+                        <div class="technique-card gtd">
+                            <div class="technique-icon">
+                                <i class="fas fa-inbox"></i>
+                            </div>
+                            <div class="technique-info">
+                                <h3>GTD System</h3>
+                                <p>Capture, process, organize</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="task-filters">
+                        <button class="filter-btn active" data-filter="all">All</button>
+                        <button class="filter-btn" data-filter="pending">Pending</button>
+                        <button class="filter-btn" data-filter="completed">Completed</button>
+                        <button class="filter-btn" data-filter="priority">Priority</button>
+                        <button class="filter-btn" data-filter="high-impact">High Impact</button>
+                        <button class="filter-btn" data-filter="eat-the-frog">Eat The Frog</button>
+                        <button class="filter-btn" data-filter="batch">Batched</button>
+                        <button class="filter-btn" data-filter="inbox">Inbox</button>
+                    </div>
+                    
+                    <div class="tasks-container">
+                        <!-- Tasks will be added here dynamically -->
+                        <div class="empty-state">
+                            <img src="assets/images/empty-tasks.svg" alt="No tasks yet">
+                            <h3>No tasks yet!</h3>
+                            <p>Add your first task to get started on your productivity journey.</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Task Modal -->
+                    <div class="modal" id="task-modal">
+                        <div class="modal-content">
+                            <span class="close-modal">&times;</span>
+                            <h2 id="modal-title">Add New Task</h2>
+                            <form id="task-form">
+                                <div class="form-group">
+                                    <label for="task-title">Task Title</label>
+                                    <input type="text" id="task-title" placeholder="What needs to be done?" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="task-description">Description (Optional)</label>
+                                    <textarea id="task-description" placeholder="Add details about your task"></textarea>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="estimated-time">Estimated Time (minutes)</label>
+                                        <input type="number" id="estimated-time" min="1" value="25">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="task-priority">Priority</label>
+                                        <select id="task-priority">
+                                            <option value="low">Low</option>
+                                            <option value="medium" selected>Medium</option>
+                                            <option value="high">High</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="task-category">Category</label>
+                                        <select id="task-category">
+                                            <option value="work">Work</option>
+                                            <option value="personal">Personal</option>
+                                            <option value="study">Study</option>
+                                            <option value="health">Health</option>
+                                            <option value="other">Other</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="task-impact">Impact (80/20 Rule)</label>
+                                        <select id="task-impact">
+                                            <option value="low">Low</option>
+                                            <option value="medium" selected>Medium</option>
+                                            <option value="high">High</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="task-difficulty">Difficulty (Eat The Frog)</label>
+                                        <select id="task-difficulty">
+                                            <option value="low">Low</option>
+                                            <option value="medium" selected>Medium</option>
+                                            <option value="high">High</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="task-batch">Batch Label (Optional)</label>
+                                        <input type="text" id="task-batch" placeholder="Group similar tasks">
+                                    </div>
+                                </div>
+                                <div class="form-group checkbox-group">
+                                    <input type="checkbox" id="task-inbox">
+                                    <label for="task-inbox">Add to GTD Inbox</label>
+                                </div>
+                                <div class="form-actions">
+                                    <button type="button" class="cancel-btn">Cancel</button>
+                                    <button type="submit" class="save-btn">Save Task</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    
+                    <!-- Batch Modal -->
+                    <div class="modal" id="batch-modal">
+                        <div class="modal-content">
+                            <span class="close-modal">&times;</span>
+                            <h2>Task Batching</h2>
+                            <p class="modal-description">Group similar tasks together for more efficient work sessions.</p>
+                            
+                            <div class="batch-container">
+                                <div class="batch-list">
+                                    <!-- Batch groups will be added here dynamically -->
+                                </div>
+                                
+                                <div class="new-batch-form">
+                                    <h3>Create New Batch</h3>
+                                    <div class="form-group">
+                                        <label for="batch-name">Batch Name</label>
+                                        <input type="text" id="batch-name" placeholder="e.g., Email Responses">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Select Tasks to Include</label>
+                                        <div class="batch-task-selection">
+                                            <!-- Available tasks will be added here dynamically -->
+                                        </div>
+                                    </div>
+                                    <button id="create-batch-btn" class="save-btn">Create Batch</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- GTD Inbox Modal -->
+                    <div class="modal" id="inbox-modal">
+                        <div class="modal-content">
+                            <span class="close-modal">&times;</span>
+                            <h2>Quick Capture</h2>
+                            <p class="modal-description">Quickly capture tasks and process them later.</p>
+                            
+                            <div class="inbox-form">
+                                <div class="form-group">
+                                    <label for="inbox-task">What's on your mind?</label>
+                                    <textarea id="inbox-task" placeholder="Type anything you need to remember or do..."></textarea>
+                                </div>
+                                <button id="add-to-inbox-btn" class="save-btn">Add to Inbox</button>
+                            </div>
+                            
+                            <div class="inbox-items">
+                                <h3>Inbox Items</h3>
+                                <div class="inbox-list">
+                                    <!-- Inbox items will be added here dynamically -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Pomodoro Section -->
+                <section id="pomodoro" class="content-section">
+                    <div class="pomodoro-container">
+                        <div class="section-header">
+                            <h2>Pomodoro Timer</h2>
+                        </div>
+                        
+                        <div class="timer-mode">
+                            <button id="pomodoro-btn" class="timer-mode-btn active">Pomodoro</button>
+                            <button id="short-break-btn" class="timer-mode-btn">Short Break</button>
+                            <button id="long-break-btn" class="timer-mode-btn">Long Break</button>
+                        </div>
+                        
+                        <div class="timer-display-container">
+                            <div class="progress-ring-container">
+                                <svg class="progress-ring" width="300" height="300">
+                                    <circle class="progress-ring-circle" stroke-width="8" stroke="#4caf50" fill="transparent" r="120" cx="150" cy="150" />
+                                </svg>
+                                <div class="timer-content">
+                                    <h2 id="timer-status">Focus Time</h2>
+                                    <div id="timer-display">25:00</div>
+                                </div>
+                            </div>
+                            <div class="timer-controls">
+                                <button id="start-timer" class="timer-btn">Start</button>
+                                <button id="pause-timer" class="timer-btn" style="display: none;">Pause</button>
+                                <button id="reset-timer" class="timer-btn">Reset</button>
+                            </div>
+                            
+                            <div class="lofi-player-container">
+                                <h3>Lofi Music</h3>
+                                <div class="lofi-controls">
+                                    <button id="toggle-lofi" class="lofi-btn">
+                                        <i class="fas fa-play"></i> Play Music
+                                    </button>
+                                    <div class="volume-control">
+                                        <i class="fas fa-volume-down"></i>
+                                        <input type="range" id="volume-slider" min="0" max="100" value="50">
+                                        <i class="fas fa-volume-up"></i>
+                                    </div>
+                                </div>
+                                <div class="lofi-tracks">
+                                    <select id="lofi-track-select">
+                                        <option value="lofi-beats">Lofi Beats</option>
+                                        <option value="study-vibes">Study Vibes</option>
+                                        <option value="chill-hop">Chill Hop</option>
+                                        <option value="jazz-lofi">Jazz Lofi</option>
+                                        <option value="piano-ambient">Piano Ambient</option>
+                                        <option value="meditation">Meditation</option>
+                                        <option value="coffee-shop">Coffee Shop</option>
+                                        <option value="nature-sounds">Nature Sounds</option>
+                                        <option value="rain-sounds">Rain Sounds</option>
+                                        <option value="ocean-waves">Ocean Waves</option>
+                                        <option value="fireplace">Fireplace</option>
+                                        <option value="night-sounds">Night Sounds</option>
+                                    </select>
+                                </div>
+                                <audio id="lofi-player" loop preload="none">
+                                    <!-- Source will be set dynamically by JavaScript -->
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </div>
+                        </div>
+                        
+                        <div class="pomodoro-stats">
+                            <div class="stat-item">
+                                <div class="stat-value" id="pomodoro-counter">0</div>
+                                <div class="stat-label">Completed Pomodoros</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value" id="pomodoro-streak">0</div>
+                                <div class="stat-label">Current Streak</div>
+                            </div>
+                        </div>
+                        
+                        <div class="pomodoro-settings">
+                            <h3>Timer Settings</h3>
+                            <div class="settings-group">
+                                <label for="pomodoro-duration">Pomodoro Duration (minutes)</label>
+                                <input type="number" id="pomodoro-duration" min="1" max="60" value="25">
+                            </div>
+                            <div class="settings-group">
+                                <label for="short-break-duration">Short Break Duration (minutes)</label>
+                                <input type="number" id="short-break-duration" min="1" max="30" value="5">
+                            </div>
+                            <div class="settings-group">
+                                <label for="long-break-duration">Long Break Duration (minutes)</label>
+                                <input type="number" id="long-break-duration" min="1" max="60" value="15">
+                            </div>
+                            <div class="settings-group">
+                                <label for="long-break-interval">Long Break After (pomodoros)</label>
+                                <input type="number" id="long-break-interval" min="1" max="10" value="4">
+                            </div>
+                            <div class="settings-group">
+                                <label for="auto-start-breaks">Auto-start Breaks</label>
+                                <input type="checkbox" id="auto-start-breaks">
+                            </div>
+                            <div class="settings-group">
+                                <label for="auto-start-pomodoros">Auto-start Pomodoros</label>
+                                <input type="checkbox" id="auto-start-pomodoros">
+                            </div>
+                            <div class="settings-group">
+                                <label for="sound-notification">Sound Notification</label>
+                                <input type="checkbox" id="sound-notification" checked>
+                            </div>
+                            <div class="settings-group">
+                                <label for="desktop-notification">Desktop Notification</label>
+                                <input type="checkbox" id="desktop-notification" checked>
+                            </div>
+                            <button id="save-pomodoro-settings" class="settings-save-btn">Save Settings</button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Badges Section -->
+                <section id="badges" class="content-section">
+                    <div class="section-header">
+                        <h2>Achievement Badges</h2>
+                    </div>
+                    <div class="badges-container">
+                        <div class="badges-category">
+                            <h3>Streak & Consistency</h3>
+                            <div class="badges-grid">
+                                <!-- Badges will be added dynamically -->
+                            </div>
+                        </div>
+                        <div class="badges-category">
+                            <h3>Task Completion</h3>
+                            <div class="badges-grid">
+                                <!-- Badges will be added dynamically -->
+                            </div>
+                        </div>
+                        <div class="badges-category">
+                            <h3>Achievements & Milestones</h3>
+                            <div class="badges-grid">
+                                <!-- Badges will be added dynamically -->
+                            </div>
+                        </div>
+                        <div class="badges-category">
+                            <h3>Special & Fun</h3>
+                            <div class="badges-grid">
+                                <!-- Badges will be added dynamically -->
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Analytics Section -->
+                <section id="analytics" class="content-section">
+                    <div class="section-header">
+                        <h2>Productivity Analytics</h2>
+                    </div>
+                    <div class="analytics-container">
+                        <div class="analytics-cards">
+                            <div class="analytics-card">
+                                <div class="card-icon">
+                                    <i class="fas fa-check-circle"></i>
+                                </div>
+                                <div class="card-content">
+                                    <h3>Completed Tasks</h3>
+                                    <p class="card-value">0</p>
+                                </div>
+                            </div>
+                            <div class="analytics-card">
+                                <div class="card-icon">
+                                    <i class="fas fa-hourglass-half"></i>
+                                </div>
+                                <div class="card-content">
+                                    <h3>Pending Tasks</h3>
+                                    <p class="card-value">0</p>
+                                </div>
+                            </div>
+                            <div class="analytics-card">
+                                <div class="card-icon">
+                                    <i class="fas fa-clock"></i>
+                                </div>
+                                <div class="card-content">
+                                    <h3>Focus Time</h3>
+                                    <p class="card-value">0 hrs</p>
+                                </div>
+                            </div>
+                            <div class="analytics-card">
+                                <div class="card-icon">
+                                    <i class="fas fa-trophy"></i>
+                                </div>
+                                <div class="card-content">
+                                    <h3>Badges Earned</h3>
+                                    <p class="card-value">0</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="analytics-charts">
+                            <div class="chart-container">
+                                <h3>Weekly Productivity</h3>
+                                <canvas id="productivity-chart"></canvas>
+                            </div>
+                            <div class="chart-container">
+                                <h3>Task Completion Rate</h3>
+                                <canvas id="completion-chart"></canvas>
+                            </div>
+                        </div>
+                        <div class="ai-insights">
+                            <h3>AI Productivity Insights</h3>
+                            <div class="insights-container">
+                                <div class="insight-card">
+                                    <div class="insight-icon">
+                                        <i class="fas fa-lightbulb"></i>
+                                    </div>
+                                    <div class="insight-content">
+                                        <h4>Start your productivity journey</h4>
+                                        <p>Complete your first task to get personalized insights!</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Diary Section -->
+                <section id="diary" class="content-section">
+                    <div class="section-header">
+                        <h2>My Journal</h2>
+                        <div class="journal-controls">
+                            <button class="new-entry-btn" onclick="createNewJournalEntry()">
+                                <i class="fas fa-plus"></i> New Entry
+                            </button>
+                            <button class="settings-btn">
+                                <i class="fas fa-cog"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="diary-container">
+                        <div class="diary-sidebar">
+                            <div class="diary-search">
+                                <input type="text" placeholder="Search journal...">
+                                <i class="fas fa-search"></i>
+                            </div>
+                            <div class="journal-actions">
+                                <button class="journal-action-btn new-entry-sidebar-btn" onclick="createNewJournalEntry()">
+                                    <i class="fas fa-plus-circle"></i> New Entry
+                                </button>
+                                <button class="journal-action-btn view-all-btn" onclick="viewAllEntries()">
+                                    <i class="fas fa-book-open"></i> View All Entries
+                                </button>
+                                <button class="journal-action-btn starred-btn" onclick="viewStarredEntries()">
+                                    <i class="fas fa-star"></i> View Starred Entries
+                                </button>
+                            </div>
+                            <div class="diary-entries">
+                                <!-- Diary entries will be added dynamically -->
+                                <div class="empty-diary">
+                                    <p>No journal entries yet. Start writing today!</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="diary-content">
+                            <div class="journal-editor-container">
+                                <div class="journal-toolbar">
+                                    <div class="toolbar-left">
+                                        <button class="toolbar-btn save-now-btn" onclick="saveJournalEntry(true)">Save now</button>
+                                        <span class="save-status">Saved a few seconds ago</span>
+                                    </div>
+                                    <div class="toolbar-right">
+                                        <button class="toolbar-btn cancel-btn" onclick="cancelJournalEntry()">Cancel</button>
+                                        <button class="toolbar-btn save-btn" onclick="saveJournalEntry()">Save</button>
+                                    </div>
+                                </div>
+                                <div class="journal-tabs">
+                                    <div class="tab active" data-tab="backgrounds">Backgrounds</div>
+                                    <div class="tab" data-tab="pad-styles">Pad Styles</div>
+                                </div>
+                                <div class="journal-customization">
+                                    <div class="tab-content backgrounds-content active">
+                                        <div class="background-grid">
+                                            <!-- Background options -->
+                                            <div class="background-option" data-bg="camera"><i class="fas fa-camera"></i></div>
+                                            <div class="background-option" data-bg="plain-white"></div>
+                                            <div class="background-option" data-bg="cream-paper"></div>
+                                            <div class="background-option" data-bg="light-blue"></div>
+                                            <div class="background-option" data-bg="cork"></div>
+                                            <div class="background-option" data-bg="wood"></div>
+                                            <div class="background-option" data-bg="dark-wood"></div>
+                                            <div class="background-option" data-bg="concrete"></div>
+                                            <div class="background-option" data-bg="sparkle"></div>
+                                            <div class="background-option" data-bg="black"></div>
+                                            <div class="background-option" data-bg="grass"></div>
+                                            <div class="background-option" data-bg="pebbles"></div>
+                                            <div class="background-option" data-bg="sand"></div>
+                                            <div class="background-option" data-bg="marble"></div>
+                                            <div class="background-option" data-bg="water"></div>
+                                            <div class="background-option" data-bg="yellow"></div>
+                                            <div class="background-option" data-bg="colorful"></div>
+                                            <div class="background-option" data-bg="pattern1"></div>
+                                            <div class="background-option" data-bg="pattern2"></div>
+                                            <div class="background-option" data-bg="pattern3"></div>
+                                            <div class="background-option" data-bg="pink"></div>
+                                            <div class="background-option" data-bg="plaid1"></div>
+                                            <div class="background-option" data-bg="plaid2"></div>
+                                            <div class="background-option" data-bg="gray"></div>
+                                            <div class="background-option" data-bg="red"></div>
+                                        </div>
+                                    </div>
+                                    <div class="tab-content pad-styles-content">
+                                        <!-- Pad styles will be added here -->
+                                    </div>
+                                </div>
+                                <div class="journal-editor">
+                                    <div class="editor-header">
+                                        <div class="entry-actions">
+                                            <button class="entry-action-btn star-btn"><i class="far fa-star"></i></button>
+                                            <button class="entry-action-btn lock-btn"><i class="fas fa-lock-open"></i></button>
+                                        </div>
+                                        <input type="text" id="entry-title" placeholder="Title">
+                                        <div class="entry-date">
+                                            <i class="far fa-calendar-alt"></i>
+                                            <span id="entry-date"></span>
+                                        </div>
+                                    </div>
+                                    <div class="editor-toolbar">
+                                        <button data-command="bold" title="Bold"><i class="fas fa-bold"></i></button>
+                                        <button data-command="italic" title="Italic"><i class="fas fa-italic"></i></button>
+                                        <button data-command="underline" title="Underline"><i class="fas fa-underline"></i></button>
+                                        <button data-command="strikeThrough" title="Strikethrough"><i class="fas fa-strikethrough"></i></button>
+                                        <button data-command="justifyLeft" title="Align Left"><i class="fas fa-align-left"></i></button>
+                                        <button data-command="justifyCenter" title="Align Center"><i class="fas fa-align-center"></i></button>
+                                        <button data-command="justifyRight" title="Align Right"><i class="fas fa-align-right"></i></button>
+                                        <button data-command="insertUnorderedList" title="Bullet List"><i class="fas fa-list-ul"></i></button>
+                                        <button data-command="insertOrderedList" title="Numbered List"><i class="fas fa-list-ol"></i></button>
+                                        <button class="add-image-btn" title="Add Image"><i class="fas fa-image"></i></button>
+                                        <button class="add-link-btn" title="Add Link"><i class="fas fa-link"></i></button>
+                                        <button class="text-color-btn" title="Text Color"><i class="fas fa-palette"></i></button>
+                                    </div>
+                                    <div class="editor-body" contenteditable="true" placeholder="Write your thoughts here..."></div>
+                                    <div class="word-count">
+                                        <span id="word-counter">0 words</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="entry-view">
+                                <!-- Entry view will be shown here when viewing an entry -->
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+
+        <!-- Notification Area -->
+        <div class="notification-area">
+            <!-- Notifications will appear here -->
+        </div>
+        
+        <!-- Badge Modal -->
+        <div class="badge-modal" id="badge-modal">
+            <div class="badge-modal-content">
+                <span class="close-badge-modal">&times;</span>
+                <div class="badge-modal-icon">
+                    <img src="" class="badge-decoration" alt="Badge decoration">
+                    <div class="badge-circle">
+                        <i class=""></i>
+                    </div>
+                </div>
+                <div class="badge-modal-info">
+                    <h2 class="badge-modal-name"></h2>
+                    <p class="badge-modal-description"></p>
+                    <p class="badge-modal-date"></p>
+                </div>
+                <div class="badge-modal-actions">
+                    <button class="badge-modal-btn close-btn">Close</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Import/Export Data -->
+        <input type="file" id="import-file" accept=".json" style="display: none;">
+    </div>
+
+    <!-- Chatbot Component -->
+    <div class="chatbot-container">
+        <div class="chatbot-header">
+            <h3><i class="fas fa-robot"></i> Pro-To-Pro Assistant</h3>
+            <button class="chatbot-close">×</button>
+        </div>
+        <div class="chat-messages"></div>
+        <div class="typing-indicator">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <div class="chat-input-container">
+            <input type="text" class="chat-input" placeholder="Ask me anything...">
+            <button class="chat-send-button">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+
+    <button class="chatbot-toggle">
+        <i class="fas fa-comment-dots"></i>
+    </button>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.9.6/lottie.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="js/utility.js"></script>
+    <script src="js/animations.js"></script>
+    <script src="js/robot-cursor.js"></script>
+    <script src="js/tasks.js"></script>
+    <script src="js/pomodoro.js"></script>
+    <script src="js/badges.js"></script>
+    <script src="js/analytics.js"></script>
+    <script src="js/diary.js"></script>
+    <script src="js/nlp-service.js"></script>
+    <script src="js/chatbot.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

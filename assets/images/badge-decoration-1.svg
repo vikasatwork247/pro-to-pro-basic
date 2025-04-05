@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="100px" height="100px" viewBox="0 0 100 100" version="1.1" xmlns="http://www.w3.org/2000/svg">
+    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <circle stroke="#FFD600" stroke-width="2" cx="50" cy="50" r="45" stroke-dasharray="5,5"></circle>
+        <path d="M50,0 L53,10 L63,10 L55,16 L58,26 L50,20 L42,26 L45,16 L37,10 L47,10 Z" fill="#FFD600"></path>
+        <path d="M50,100 L47,90 L37,90 L45,84 L42,74 L50,80 L58,74 L55,84 L63,90 L53,90 Z" fill="#FFD600"></path>
+        <path d="M0,50 L10,47 L10,37 L16,45 L26,42 L20,50 L26,58 L16,55 L10,63 L10,53 Z" fill="#FFD600"></path>
+        <path d="M100,50 L90,53 L90,63 L84,55 L74,58 L80,50 L74,42 L84,45 L90,37 L90,47 Z" fill="#FFD600"></path>
+    </g>
+</svg>

@@ -1,4 +1,3 @@
-# pro-to-pro-basic
 # Productivity Dashboard
 
 A comprehensive productivity dashboard with task management, Pomodoro timer with lofi music integration, habit tracker, and more.
@@ -55,4 +54,3 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 - Font Awesome for icons
 - Google Fonts for typography
-

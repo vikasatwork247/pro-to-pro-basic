@@ -1,0 +1,306 @@
+/* Robot Cursor Styles */
+
+/* Only show robot cursor when active */
+.robot-cursor-active {
+    cursor: none;
+}
+
+/* Robot cursor container */
+.robot-cursor-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 10000;
+    overflow: hidden;
+}
+
+/* Custom cursor */
+.robot-cursor {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.7);
+    position: fixed;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    mix-blend-mode: difference;
+    z-index: 10001;
+    display: none;
+}
+
+.robot-cursor-active .robot-cursor {
+    display: block;
+}
+
+/* Glow effect */
+.robot-glow {
+    position: fixed;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, rgba(255, 107, 107, 0.4) 0%, rgba(0, 0, 0, 0) 70%);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 10002;
+    display: none;
+}
+
+.robot-cursor-active .robot-glow {
+    display: block;
+}
+
+/* Robot container */
+.robot-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transform-origin: center;
+    transition: transform 0.05s ease-out;
+    z-index: 10003;
+    display: none;
+    scale: 0.5;
+}
+
+.robot-cursor-active .robot-container {
+    display: block;
+}
+
+/* Robot head */
+.robot-head {
+    width: 120px;
+    height: 80px;
+    background: linear-gradient(135deg, #FF9A8B, #FF6B6B);
+    border-radius: 20px;
+    position: relative;
+    box-shadow: 0 0 20px rgba(255, 107, 107, 0.5);
+    transition: transform 0.3s ease;
+}
+
+.dark-theme .robot-head {
+    background: linear-gradient(135deg, #FF9A8B, #FF6B6B);
+}
+
+/* Robot neck */
+.robot-neck {
+    width: 30px;
+    height: 40px;
+    background: linear-gradient(to bottom, #FF9A8B, #FF6B6B);
+    margin: 0 auto;
+    border-radius: 50% 50% 0 0;
+    position: relative;
+    top: -5px;
+}
+
+.dark-theme .robot-neck {
+    background: linear-gradient(to bottom, #FF9A8B, #FF6B6B);
+}
+
+/* Robot base */
+.robot-base {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #FF9A8B, #FF6B6B);
+    margin: 0 auto;
+    position: relative;
+    top: -5px;
+    border-radius: 10px;
+}
+
+.dark-theme .robot-base {
+    background: linear-gradient(135deg, #FF9A8B, #FF6B6B);
+}
+
+/* Robot eyes */
+.robot-eye {
+    width: 25px;
+    height: 25px;
+    background-color: white;
+    border-radius: 50%;
+    position: absolute;
+    top: 20px;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+}
+
+.robot-eye.left {
+    left: 25px;
+}
+
+.robot-eye.right {
+    right: 25px;
+}
+
+/* Robot pupils */
+.robot-pupil {
+    width: 12px;
+    height: 12px;
+    background-color: #333;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* Robot mouth */
+.robot-mouth {
+    width: 60px;
+    height: 20px;
+    background-color: transparent;
+    border-bottom: 5px solid #333;
+    border-radius: 0 0 50% 50%;
+    position: absolute;
+    bottom: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+/* Robot cheeks */
+.robot-cheek {
+    width: 15px;
+    height: 8px;
+    background-color: #FF9A8B;
+    border-radius: 50%;
+    position: absolute;
+    top: 40px;
+    opacity: 0.7;
+}
+
+.robot-cheek.left {
+    left: 15px;
+}
+
+.robot-cheek.right {
+    right: 15px;
+}
+
+/* Robot antenna */
+.robot-antenna {
+    width: 8px;
+    height: 20px;
+    background-color: #FF6B6B;
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.robot-antenna-ball {
+    width: 12px;
+    height: 12px;
+    background-color: #FFD166;
+    border-radius: 50%;
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    box-shadow: 0 0 10px rgba(255, 209, 102, 0.7);
+}
+
+/* Toggle button */
+.robot-toggle-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 160px; /* Position after theme toggle and chatbot toggle */
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: #FF6B6B;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 1000;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    border: none;
+    transition: all var(--transition-normal);
+}
+
+.dark-theme .robot-toggle-btn {
+    background-color: #FF6B6B;
+}
+
+.robot-toggle-btn:hover {
+    transform: scale(1.1);
+    background-color: #FF9A8B;
+}
+
+.robot-toggle-btn i {
+    font-size: 1.5rem;
+}
+
+/* Active state */
+.robot-toggle-btn.active {
+    background-color: #FFD166;
+    animation: joyfulPulse 2s infinite;
+}
+
+.dark-theme .robot-toggle-btn.active {
+    background-color: #FFD166;
+}
+
+@keyframes joyfulPulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(255, 209, 102, 0.7);
+    }
+    70% {
+        box-shadow: 0 0 0 15px rgba(255, 209, 102, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(255, 209, 102, 0);
+    }
+}
+
+/* Joyful bounce animation */
+.joyful-bounce {
+    animation: joyfulBounce 2s infinite;
+}
+
+@keyframes joyfulBounce {
+    0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+    40% {transform: translateY(-10px);}
+    60% {transform: translateY(-5px);}
+}
+
+/* Happy wiggle animation */
+.happy-wiggle {
+    animation: happyWiggle 1s infinite;
+}
+
+@keyframes happyWiggle {
+    0%, 100% {transform: rotate(0deg);}
+    25% {transform: rotate(-5deg);}
+    75% {transform: rotate(5deg);}
+}
+
+/* Emoji particles */
+.emoji-particle {
+    position: absolute;
+    font-size: 20px;
+    pointer-events: none;
+    z-index: 10004;
+    opacity: 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .robot-container {
+        scale: 0.3;
+    }
+    
+    .robot-toggle-btn {
+        width: 40px;
+        height: 40px;
+        right: 140px;
+        bottom: 15px;
+    }
+    
+    .robot-toggle-btn i {
+        font-size: 1.2rem;
+    }
+}

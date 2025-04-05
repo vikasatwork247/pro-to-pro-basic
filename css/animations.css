@@ -1,0 +1,417 @@
+/**
+ * Pro-To-Pro Animations CSS
+ * 
+ * This file contains the CSS styles needed for Anime.js animations
+ * Designed to be elegant, minimal, and soothing.
+ */
+
+/* Pro-To-Pro Animation Styles */
+
+/* Fade In Animation */
+.fade-in {
+    opacity: 0;
+    animation: fadeIn 0.5s ease forwards;
+}
+
+@keyframes fadeIn {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+}
+
+/* Slide In Animations */
+.slide-in-left {
+    transform: translateX(-50px);
+    opacity: 0;
+    animation: slideInLeft 0.5s ease forwards;
+}
+
+.slide-in-right {
+    transform: translateX(50px);
+    opacity: 0;
+    animation: slideInRight 0.5s ease forwards;
+}
+
+.slide-in-up {
+    transform: translateY(50px);
+    opacity: 0;
+    animation: slideInUp 0.5s ease forwards;
+}
+
+.slide-in-down {
+    transform: translateY(-50px);
+    opacity: 0;
+    animation: slideInDown 0.5s ease forwards;
+}
+
+@keyframes slideInLeft {
+    0% { transform: translateX(-50px); opacity: 0; }
+    100% { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes slideInRight {
+    0% { transform: translateX(50px); opacity: 0; }
+    100% { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes slideInUp {
+    0% { transform: translateY(50px); opacity: 0; }
+    100% { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes slideInDown {
+    0% { transform: translateY(-50px); opacity: 0; }
+    100% { transform: translateY(0); opacity: 1; }
+}
+
+/* Ripple Effect */
+.ripple-effect {
+    position: absolute;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.4);
+    transform: scale(0);
+    pointer-events: none;
+}
+
+/* Pulse Animation */
+.pulse {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(108, 92, 231, 0.7);
+    }
+    70% {
+        box-shadow: 0 0 0 10px rgba(108, 92, 231, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(108, 92, 231, 0);
+    }
+}
+
+/* Bounce Animation */
+.bounce {
+    animation: bounce 0.5s ease;
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+    40% {transform: translateY(-20px);}
+    60% {transform: translateY(-10px);}
+}
+
+/* Shake Animation */
+.shake {
+    animation: shake 0.5s ease;
+}
+
+@keyframes shake {
+    0%, 100% {transform: translateX(0);}
+    10%, 30%, 50%, 70%, 90% {transform: translateX(-5px);}
+    20%, 40%, 60%, 80% {transform: translateX(5px);}
+}
+
+/* Rotate Animation */
+.rotate {
+    animation: rotate 1s linear;
+}
+
+@keyframes rotate {
+    0% {transform: rotate(0deg);}
+    100% {transform: rotate(360deg);}
+}
+
+/* Typing Animation */
+.typing-animation {
+    overflow: hidden;
+    border-right: 2px solid var(--primary-color);
+    white-space: nowrap;
+    margin: 0 auto;
+    animation: typing 3.5s steps(40, end), blink-caret 0.75s step-end infinite;
+}
+
+@keyframes typing {
+    from { width: 0 }
+    to { width: 100% }
+}
+
+@keyframes blink-caret {
+    from, to { border-color: transparent }
+    50% { border-color: var(--primary-color) }
+}
+
+/* Particle Container */
+.particle-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1000;
+    overflow: hidden;
+}
+
+.particle {
+    position: absolute;
+    background-color: var(--primary-color);
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+.dark-theme .particle {
+    background-color: var(--accent-color);
+}
+
+/* 3D Card Effect */
+.card-3d {
+    transition: transform 0.3s ease;
+    transform-style: preserve-3d;
+    perspective: 1000px;
+}
+
+/* Liquid Button Effect */
+.liquid-button {
+    position: relative;
+    overflow: hidden;
+}
+
+.liquid-button::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 150%;
+    height: 150%;
+    background: rgba(255, 255, 255, 0.2);
+    transform: translate(-50%, -50%) scale(0);
+    border-radius: 50%;
+    z-index: -1;
+    transition: transform 0.6s ease;
+}
+
+.liquid-button:hover::after {
+    transform: translate(-50%, -50%) scale(1);
+}
+
+/* Text Scramble Effect */
+.scramble-text {
+    display: inline-block;
+}
+
+/* Morphing Shape */
+.morphing-shape {
+    transition: d 0.5s ease;
+}
+
+/* Parallax Element */
+.parallax-element {
+    will-change: transform;
+}
+
+/* Notification Animation */
+.notification-slide {
+    animation: notificationSlide 0.5s ease forwards, notificationFade 0.5s ease 4.5s forwards;
+}
+
+@keyframes notificationSlide {
+    0% { transform: translateX(100%); opacity: 0; }
+    100% { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes notificationFade {
+    0% { opacity: 1; }
+    100% { opacity: 0; transform: translateY(-10px); }
+}
+
+/* Task Complete Animation */
+.task-complete {
+    animation: taskComplete 0.5s ease forwards;
+}
+
+@keyframes taskComplete {
+    0% { background-color: transparent; }
+    50% { background-color: rgba(0, 200, 83, 0.2); }
+    100% { background-color: transparent; }
+}
+
+/* Task Delete Animation */
+.task-delete {
+    animation: taskDelete 0.5s ease forwards;
+}
+
+@keyframes taskDelete {
+    0% { transform: scale(1); opacity: 1; }
+    100% { transform: scale(0.8); opacity: 0; }
+}
+
+/* Badge Earn Animation */
+.badge-earn {
+    animation: badgeEarn 1s ease forwards;
+}
+
+@keyframes badgeEarn {
+    0% { transform: scale(0); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+
+/* Timer Progress Animation */
+.timer-progress {
+    transition: stroke-dashoffset 1s linear;
+}
+
+/* Breathe Animation */
+.breathe {
+    animation: breathe 4s infinite ease-in-out;
+}
+
+@keyframes breathe {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+/* Focus Mode Animation */
+.focus-mode-enter {
+    animation: focusModeEnter 1s ease forwards;
+}
+
+@keyframes focusModeEnter {
+    0% { filter: blur(0); }
+    100% { filter: blur(5px); }
+}
+
+.focus-target {
+    animation: focusTarget 1s ease forwards;
+    z-index: 10;
+    position: relative;
+}
+
+@keyframes focusTarget {
+    0% { transform: scale(1); filter: blur(0); }
+    100% { transform: scale(1.05); filter: blur(0); box-shadow: 0 0 30px rgba(0,0,0,0.2); }
+}
+
+/* Staggered Animation Delays */
+.stagger-delay-1 { animation-delay: 0.1s; }
+.stagger-delay-2 { animation-delay: 0.2s; }
+.stagger-delay-3 { animation-delay: 0.3s; }
+.stagger-delay-4 { animation-delay: 0.4s; }
+.stagger-delay-5 { animation-delay: 0.5s; }
+
+/* Dark Mode Transition */
+.dark-mode-transition {
+    transition: background-color 0.5s ease, color 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease;
+}
+
+/* Confetti Animation */
+.confetti {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    pointer-events: none;
+    z-index: 9999;
+}
+
+/* Ripple Container for Buttons */
+button {
+    position: relative;
+    overflow: hidden;
+}
+
+/* Floating Animation */
+.float {
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0px); }
+}
+
+/* Glow Effect */
+.glow {
+    animation: glow 2s ease-in-out infinite alternate;
+}
+
+@keyframes glow {
+    from { box-shadow: 0 0 5px rgba(108, 92, 231, 0.2); }
+    to { box-shadow: 0 0 20px rgba(108, 92, 231, 0.6); }
+}
+
+/* Loading Spinner */
+.loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid rgba(0, 0, 0, 0.1);
+    border-radius: 50%;
+    border-top-color: var(--primary-color);
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Progress Bar Animation */
+.progress-bar-animated {
+    background-image: linear-gradient(45deg, 
+        rgba(255, 255, 255, 0.15) 25%, 
+        transparent 25%, 
+        transparent 50%, 
+        rgba(255, 255, 255, 0.15) 50%, 
+        rgba(255, 255, 255, 0.15) 75%, 
+        transparent 75%, 
+        transparent);
+    background-size: 1rem 1rem;
+    animation: progressAnimation 1s linear infinite;
+}
+
+@keyframes progressAnimation {
+    0% { background-position: 1rem 0; }
+    100% { background-position: 0 0; }
+}
+
+/* Hover Scale Effect */
+.hover-scale {
+    transition: transform 0.3s ease;
+}
+
+.hover-scale:hover {
+    transform: scale(1.05);
+}
+
+/* Hover Shadow Effect */
+.hover-shadow {
+    transition: box-shadow 0.3s ease;
+}
+
+.hover-shadow:hover {
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Hover Color Shift */
+.hover-color-shift {
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.hover-color-shift:hover {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+/* Flicker Animation */
+.flicker {
+    animation: flicker 2s linear infinite;
+}
+
+@keyframes flicker {
+    0%, 19.999%, 22%, 62.999%, 64%, 64.999%, 70%, 100% {
+        opacity: 1;
+    }
+    20%, 21.999%, 63%, 63.999%, 65%, 69.999% {
+        opacity: 0.5;
+    }
+}

@@ -4,16 +4,15 @@
 const analyticsContainer = document.querySelector('.analytics-container');
 const timeframeSelector = document.getElementById('analytics-timeframe');
 const productivityChart = document.getElementById('productivity-chart');
-const tasksChart = document.getElementById('tasks-chart');
-const focusChart = document.getElementById('focus-chart');
-const moodChart = document.getElementById('mood-chart');
+const completionChart = document.getElementById('completion-chart');
 
 // Analytics State
 let currentTimeframe = 'week';
 let analyticsData = {
     tasks: [],
     diary: [],
-    pomodoro: []
+    pomodoro: {},
+    badges: []
 };
 
 // Initialize Analytics
@@ -21,150 +20,117 @@ function initAnalytics() {
     loadAnalyticsData();
     renderAnalytics();
     initAnalyticsEventListeners();
+    // Update analytics every minute
+    setInterval(loadAnalyticsData, 60000);
 }
 
 // Event Listeners
 function initAnalyticsEventListeners() {
-    // Timeframe selector
     if (timeframeSelector) {
         timeframeSelector.addEventListener('change', () => {
             currentTimeframe = timeframeSelector.value;
             renderAnalytics();
         });
     }
-    
-    // Window resize event for responsive charts
-    window.addEventListener('resize', debounce(() => {
-        renderCharts();
-    }, 250));
 }
 
 // Load Analytics Data
 function loadAnalyticsData() {
-    // Get tasks data
-    if (typeof getTasksData === 'function') {
-        analyticsData.tasks = getTasksData();
-    } else {
+    try {
+        // Load tasks
         analyticsData.tasks = JSON.parse(localStorage.getItem('tasks')) || [];
-    }
-    
-    // Get diary data
-    if (typeof getDiaryData === 'function') {
-        analyticsData.diary = getDiaryData();
-    } else {
+        
+        // Load diary entries
         analyticsData.diary = JSON.parse(localStorage.getItem('diaryEntries')) || [];
+        
+        // Load pomodoro data
+        const pomodoroStats = JSON.parse(localStorage.getItem('pomodoroStats')) || {};
+        analyticsData.pomodoro = {
+            completedPomodoros: pomodoroStats.completedPomodoros || 0,
+            totalFocusTime: pomodoroStats.totalFocusTime || 0,
+            currentStreak: pomodoroStats.currentStreak || 0,
+            lastPomodoroDate: pomodoroStats.lastPomodoroDate || null
+        };
+        
+        // Load badges
+        analyticsData.badges = JSON.parse(localStorage.getItem('earnedBadges')) || [];
+        
+        renderAnalytics();
+    } catch (error) {
+        console.error('Error loading analytics data:', error);
     }
-    
-    // Get pomodoro data
-    analyticsData.pomodoro = {
-        completedPomodoros: parseInt(localStorage.getItem('completedPomodoros')) || 0,
-        totalFocusTime: parseInt(localStorage.getItem('totalFocusTime')) || 0
-    };
 }
 
 // Render Analytics
 function renderAnalytics() {
     updateAnalyticsCards();
     renderCharts();
+    generateProductivityInsights();
 }
 
 // Update Analytics Cards
 function updateAnalyticsCards() {
-    // Filter data based on timeframe
     const filteredData = filterDataByTimeframe();
     
-    // Tasks statistics
+    // Completed Tasks
     const completedTasks = filteredData.tasks.filter(task => task.completed).length;
-    const totalTasks = filteredData.tasks.length;
+    updateAnalyticsCard('completed-tasks', completedTasks);
+    
+    // Pending Tasks
+    const pendingTasks = filteredData.tasks.filter(task => !task.completed).length;
+    updateAnalyticsCard('pending-tasks', pendingTasks);
+    
+    // Focus Time
+    const focusHours = Math.floor(analyticsData.pomodoro.totalFocusTime / 3600);
+    const focusMinutes = Math.floor((analyticsData.pomodoro.totalFocusTime % 3600) / 60);
+    const focusTimeFormatted = `${focusHours}h ${focusMinutes}m`;
+    updateAnalyticsCard('focus-time', focusTimeFormatted);
+    
+    // Badges Earned
+    const badgesEarned = analyticsData.badges.length;
+    updateAnalyticsCard('badges-earned', badgesEarned);
+    
+    // Task Completion Rate
+    const totalTasks = completedTasks + pendingTasks;
     const completionRate = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
-    
-    // Diary statistics
-    const totalEntries = filteredData.diary.length;
-    const avgProductivity = filteredData.diary.length > 0 
-        ? Math.round(filteredData.diary.reduce((sum, entry) => sum + entry.productivity, 0) / filteredData.diary.length * 10) / 10
-        : 0;
-    
-    // Focus time statistics
-    const focusTimeHours = Math.floor(analyticsData.pomodoro.totalFocusTime / 3600);
-    const focusTimeMinutes = Math.floor((analyticsData.pomodoro.totalFocusTime % 3600) / 60);
-    const focusTimeFormatted = `${focusTimeHours}h ${focusTimeMinutes}m`;
-    
-    // Update cards
-    updateAnalyticsCard('completed', completedTasks);
-    updateAnalyticsCard('pending', totalTasks - completedTasks);
-    updateAnalyticsCard('rate', `${completionRate}%`);
-    updateAnalyticsCard('entries', totalEntries);
-    updateAnalyticsCard('productivity', avgProductivity);
-    updateAnalyticsCard('focus', focusTimeFormatted);
-    updateAnalyticsCard('pomodoros', analyticsData.pomodoro.completedPomodoros);
+    updateAnalyticsCard('completion-rate', `${completionRate}%`);
 }
 
 // Update Analytics Card
 function updateAnalyticsCard(type, value) {
-    const card = document.querySelector(`.analytics-card[data-type="${type}"] .card-value`);
-    if (card) {
-        card.textContent = value;
+    const cardValue = document.querySelector(`.analytics-card[data-type="${type}"] .card-value`);
+    if (cardValue) {
+        cardValue.textContent = value;
     }
 }
 
 // Render Charts
 function renderCharts() {
-    // Filter data based on timeframe
-    const filteredData = filterDataByTimeframe();
-    
-    // Render each chart
-    renderProductivityChart(filteredData);
-    renderTasksChart(filteredData);
-    renderFocusChart(filteredData);
-    renderMoodChart(filteredData);
+    renderProductivityChart();
+    renderCompletionChart();
 }
 
 // Render Productivity Chart
-function renderProductivityChart(data) {
-    if (!productivityChart || typeof Chart === 'undefined') return;
+function renderProductivityChart() {
+    if (!productivityChart) return;
     
-    // Destroy existing chart
+    const ctx = productivityChart.getContext('2d');
+    const data = getProductivityData();
+    
     if (window.productivityChartInstance) {
         window.productivityChartInstance.destroy();
     }
     
-    // Prepare data
-    const dateLabels = [];
-    const productivityData = [];
-    
-    // Group diary entries by date and calculate average productivity
-    const entriesByDate = groupByDate(data.diary);
-    
-    // Get date range based on timeframe
-    const dateRange = getDateRange();
-    
-    // Fill in data for each date in range
-    for (let date = new Date(dateRange.start); date <= dateRange.end; date.setDate(date.getDate() + 1)) {
-        const dateString = date.toISOString().split('T')[0];
-        dateLabels.push(formatDate(date));
-        
-        if (entriesByDate[dateString]) {
-            const entries = entriesByDate[dateString];
-            const avgProductivity = entries.reduce((sum, entry) => sum + entry.productivity, 0) / entries.length;
-            productivityData.push(avgProductivity);
-        } else {
-            productivityData.push(null); // No data for this date
-        }
-    }
-    
-    // Create chart
-    const ctx = productivityChart.getContext('2d');
     window.productivityChartInstance = new Chart(ctx, {
         type: 'line',
         data: {
-            labels: dateLabels,
+            labels: data.labels,
             datasets: [{
-                label: 'Productivity Level',
-                data: productivityData,
+                label: 'Productivity',
+                data: data.values,
                 borderColor: '#4CAF50',
                 backgroundColor: 'rgba(76, 175, 80, 0.1)',
-                borderWidth: 2,
-                tension: 0.3,
+                tension: 0.4,
                 fill: true
             }]
         },
@@ -174,287 +140,114 @@ function renderProductivityChart(data) {
             scales: {
                 y: {
                     beginAtZero: true,
-                    max: 10,
+                    max: 100,
                     title: {
                         display: true,
-                        text: 'Productivity Level (0-10)'
-                    }
-                },
-                x: {
-                    grid: {
-                        display: false
+                        text: 'Productivity (%)'
                     }
                 }
             },
             plugins: {
                 legend: {
                     display: false
-                },
-                tooltip: {
-                    callbacks: {
-                        title: function(tooltipItems) {
-                            return tooltipItems[0].label;
-                        }
-                    }
                 }
             }
         }
     });
 }
 
-// Render Tasks Chart
-function renderTasksChart(data) {
-    if (!tasksChart || typeof Chart === 'undefined') return;
+// Render Completion Chart
+function renderCompletionChart() {
+    if (!completionChart) return;
     
-    // Destroy existing chart
-    if (window.tasksChartInstance) {
-        window.tasksChartInstance.destroy();
+    const ctx = completionChart.getContext('2d');
+    const data = getCompletionData();
+    
+    if (window.completionChartInstance) {
+        window.completionChartInstance.destroy();
     }
     
-    // Prepare data
-    const dateLabels = [];
-    const completedData = [];
-    const addedData = [];
-    
-    // Group tasks by date
-    const tasksByCompletionDate = {};
-    const tasksByCreationDate = {};
-    
-    // Process tasks
-    data.tasks.forEach(task => {
-        // For completed tasks
-        if (task.completed && task.updatedAt) {
-            const dateString = new Date(task.updatedAt).toISOString().split('T')[0];
-            if (!tasksByCompletionDate[dateString]) {
-                tasksByCompletionDate[dateString] = 0;
-            }
-            tasksByCompletionDate[dateString]++;
-        }
-        
-        // For created tasks
-        const creationDateString = new Date(task.createdAt).toISOString().split('T')[0];
-        if (!tasksByCreationDate[creationDateString]) {
-            tasksByCreationDate[creationDateString] = 0;
-        }
-        tasksByCreationDate[creationDateString]++;
-    });
-    
-    // Get date range based on timeframe
-    const dateRange = getDateRange();
-    
-    // Fill in data for each date in range
-    for (let date = new Date(dateRange.start); date <= dateRange.end; date.setDate(date.getDate() + 1)) {
-        const dateString = date.toISOString().split('T')[0];
-        dateLabels.push(formatDate(date));
-        
-        completedData.push(tasksByCompletionDate[dateString] || 0);
-        addedData.push(tasksByCreationDate[dateString] || 0);
-    }
-    
-    // Create chart
-    const ctx = tasksChart.getContext('2d');
-    window.tasksChartInstance = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: dateLabels,
-            datasets: [
-                {
-                    label: 'Tasks Completed',
-                    data: completedData,
-                    backgroundColor: '#4CAF50',
-                    borderColor: '#388E3C',
-                    borderWidth: 1
-                },
-                {
-                    label: 'Tasks Added',
-                    data: addedData,
-                    backgroundColor: '#2196F3',
-                    borderColor: '#1976D2',
-                    borderWidth: 1
-                }
-            ]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    title: {
-                        display: true,
-                        text: 'Number of Tasks'
-                    }
-                },
-                x: {
-                    grid: {
-                        display: false
-                    }
-                }
-            }
-        }
-    });
-}
-
-// Render Focus Chart
-function renderFocusChart(data) {
-    if (!focusChart || typeof Chart === 'undefined') return;
-    
-    // Destroy existing chart
-    if (window.focusChartInstance) {
-        window.focusChartInstance.destroy();
-    }
-    
-    // For now, we'll just show a simple gauge chart of total focus time
-    const totalHours = Math.floor(analyticsData.pomodoro.totalFocusTime / 3600);
-    const targetHours = 100; // Target for "focus-legend"
-    
-    // Create chart
-    const ctx = focusChart.getContext('2d');
-    window.focusChartInstance = new Chart(ctx, {
+    window.completionChartInstance = new Chart(ctx, {
         type: 'doughnut',
         data: {
-            labels: ['Focus Time', 'Remaining'],
+            labels: ['Completed', 'Pending'],
             datasets: [{
-                data: [totalHours, Math.max(0, targetHours - totalHours)],
-                backgroundColor: [
-                    '#4CAF50',
-                    '#E0E0E0'
-                ],
-                borderWidth: 0
+                data: [data.completed, data.pending],
+                backgroundColor: ['#4CAF50', '#FFA726']
             }]
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
-            cutout: '70%',
             plugins: {
                 legend: {
-                    display: false
-                },
-                tooltip: {
-                    callbacks: {
-                        label: function(context) {
-                            return `${context.label}: ${context.raw} hours`;
-                        }
-                    }
+                    position: 'bottom'
                 }
             }
         }
     });
-    
-    // Add center text
-    const centerText = {
-        id: 'centerText',
-        afterDraw: function(chart) {
-            const width = chart.width;
-            const height = chart.height;
-            const ctx = chart.ctx;
-            
-            ctx.restore();
-            const fontSize = (height / 114).toFixed(2);
-            ctx.font = fontSize + 'em sans-serif';
-            ctx.textBaseline = 'middle';
-            
-            const text = `${totalHours}h / ${targetHours}h`;
-            const textX = Math.round((width - ctx.measureText(text).width) / 2);
-            const textY = height / 2;
-            
-            ctx.fillText(text, textX, textY);
-            ctx.save();
-        }
-    };
-    
-    Chart.register(centerText);
 }
 
-// Render Mood Chart
-function renderMoodChart(data) {
-    if (!moodChart || typeof Chart === 'undefined') return;
+// Get Productivity Data
+function getProductivityData() {
+    const dateRange = getDateRange();
+    const labels = [];
+    const values = [];
     
-    // Destroy existing chart
-    if (window.moodChartInstance) {
-        window.moodChartInstance.destroy();
+    for (let d = new Date(dateRange.start); d <= dateRange.end; d.setDate(d.getDate() + 1)) {
+        const date = d.toISOString().split('T')[0];
+        labels.push(formatDate(d));
+        
+        // Calculate productivity for this day
+        const dayTasks = analyticsData.tasks.filter(task => {
+            const taskDate = new Date(task.createdAt).toISOString().split('T')[0];
+            return taskDate === date;
+        });
+        
+        const completed = dayTasks.filter(task => task.completed).length;
+        const total = dayTasks.length;
+        const productivity = total > 0 ? (completed / total) * 100 : 0;
+        
+        values.push(Math.round(productivity));
     }
     
-    // Count mood distribution
-    const moodCounts = {
-        great: 0,
-        good: 0,
-        neutral: 0,
-        bad: 0,
-        terrible: 0
-    };
+    return { labels, values };
+}
+
+// Get Completion Data
+function getCompletionData() {
+    const tasks = filterDataByTimeframe().tasks;
+    const completed = tasks.filter(task => task.completed).length;
+    const pending = tasks.filter(task => !task.completed).length;
     
-    data.diary.forEach(entry => {
-        if (moodCounts.hasOwnProperty(entry.mood)) {
-            moodCounts[entry.mood]++;
-        }
-    });
-    
-    // Create chart
-    const ctx = moodChart.getContext('2d');
-    window.moodChartInstance = new Chart(ctx, {
-        type: 'pie',
-        data: {
-            labels: ['Great', 'Good', 'Neutral', 'Bad', 'Terrible'],
-            datasets: [{
-                data: [
-                    moodCounts.great,
-                    moodCounts.good,
-                    moodCounts.neutral,
-                    moodCounts.bad,
-                    moodCounts.terrible
-                ],
-                backgroundColor: [
-                    '#4CAF50', // Great - Green
-                    '#8BC34A', // Good - Light Green
-                    '#FFC107', // Neutral - Yellow
-                    '#FF9800', // Bad - Orange
-                    '#F44336'  // Terrible - Red
-                ]
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    position: 'right'
-                }
-            }
-        }
-    });
+    return { completed, pending };
 }
 
 // Filter Data By Timeframe
 function filterDataByTimeframe() {
     const dateRange = getDateRange();
     
-    // Filter tasks
-    const filteredTasks = analyticsData.tasks.filter(task => {
-        const taskDate = new Date(task.createdAt);
-        return taskDate >= dateRange.start && taskDate <= dateRange.end;
-    });
-    
-    // Filter diary entries
-    const filteredDiary = analyticsData.diary.filter(entry => {
-        const entryDate = new Date(entry.date);
-        return entryDate >= dateRange.start && entryDate <= dateRange.end;
-    });
-    
     return {
-        tasks: filteredTasks,
-        diary: filteredDiary,
-        pomodoro: analyticsData.pomodoro
+        tasks: analyticsData.tasks.filter(task => {
+            const taskDate = new Date(task.createdAt);
+            return taskDate >= dateRange.start && taskDate <= dateRange.end;
+        }),
+        diary: analyticsData.diary.filter(entry => {
+            const entryDate = new Date(entry.date);
+            return entryDate >= dateRange.start && entryDate <= dateRange.end;
+        })
     };
 }
 
-// Get Date Range based on timeframe
+// Get Date Range
 function getDateRange() {
-    const end = new Date(); // Today
+    const end = new Date();
     let start = new Date();
     
     switch (currentTimeframe) {
+        case 'day':
+            start.setHours(0, 0, 0, 0);
+            break;
         case 'week':
             start.setDate(end.getDate() - 7);
             break;
@@ -464,207 +257,71 @@ function getDateRange() {
         case 'year':
             start.setFullYear(end.getFullYear() - 1);
             break;
-        default:
-            start.setDate(end.getDate() - 7); // Default to week
     }
-    
-    // Reset hours to get full days
-    start.setHours(0, 0, 0, 0);
-    end.setHours(23, 59, 59, 999);
     
     return { start, end };
 }
 
-// Group entries by date
-function groupByDate(entries) {
-    const grouped = {};
-    
-    entries.forEach(entry => {
-        const dateString = new Date(entry.date).toISOString().split('T')[0];
-        if (!grouped[dateString]) {
-            grouped[dateString] = [];
-        }
-        grouped[dateString].push(entry);
-    });
-    
-    return grouped;
-}
-
-// Format date for display
+// Format Date
 function formatDate(date) {
-    // For week timeframe, show day name
-    if (currentTimeframe === 'week') {
-        return date.toLocaleDateString('en-US', { weekday: 'short' });
-    }
-    
-    // For month timeframe, show day and month
-    if (currentTimeframe === 'month') {
-        return date.toLocaleDateString('en-US', { day: 'numeric', month: 'short' });
-    }
-    
-    // For year timeframe, show month only
-    return date.toLocaleDateString('en-US', { month: 'short' });
+    const options = { month: 'short', day: 'numeric' };
+    return date.toLocaleDateString(undefined, options);
 }
 
-// Debounce function for resize event
-function debounce(func, wait) {
-    let timeout;
-    return function() {
-        const context = this;
-        const args = arguments;
-        clearTimeout(timeout);
-        timeout = setTimeout(() => {
-            func.apply(context, args);
-        }, wait);
-    };
-}
-
-// Generate productivity insights
+// Generate Productivity Insights
 function generateProductivityInsights() {
     const insights = [];
+    const data = filterDataByTimeframe();
     
-    // Get filtered data
-    const filteredData = filterDataByTimeframe();
+    // Task completion rate insight
+    const completedTasks = data.tasks.filter(task => task.completed).length;
+    const totalTasks = data.tasks.length;
+    const completionRate = totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0;
     
-    // Most productive day of week
-    if (filteredData.diary.length > 0) {
-        const productivityByDay = {};
-        const dayCount = {};
-        
-        filteredData.diary.forEach(entry => {
-            const date = new Date(entry.date);
-            const day = date.toLocaleDateString('en-US', { weekday: 'long' });
-            
-            if (!productivityByDay[day]) {
-                productivityByDay[day] = 0;
-                dayCount[day] = 0;
-            }
-            
-            productivityByDay[day] += entry.productivity;
-            dayCount[day]++;
+    if (completionRate >= 80) {
+        insights.push({
+            icon: 'trophy',
+            title: 'Excellent Progress!',
+            message: `You've completed ${Math.round(completionRate)}% of your tasks. Keep up the great work!`
         });
-        
-        let mostProductiveDay = null;
-        let highestAvg = 0;
-        
-        Object.keys(productivityByDay).forEach(day => {
-            const avg = productivityByDay[day] / dayCount[day];
-            if (avg > highestAvg) {
-                highestAvg = avg;
-                mostProductiveDay = day;
-            }
+    } else if (completionRate < 40) {
+        insights.push({
+            icon: 'lightbulb',
+            title: 'Room for Improvement',
+            message: 'Try breaking down your tasks into smaller, manageable pieces.'
         });
-        
-        if (mostProductiveDay) {
-            insights.push(`Your most productive day is ${mostProductiveDay} with an average productivity of ${highestAvg.toFixed(1)}/10.`);
-        }
     }
     
-    // Task completion rate trend
-    if (filteredData.tasks.length > 0) {
-        const completedTasks = filteredData.tasks.filter(task => task.completed).length;
-        const completionRate = Math.round((completedTasks / filteredData.tasks.length) * 100);
-        
-        // Compare with previous period
-        const previousDateRange = getPreviousDateRange();
-        const previousTasks = analyticsData.tasks.filter(task => {
-            const taskDate = new Date(task.createdAt);
-            return taskDate >= previousDateRange.start && taskDate <= previousDateRange.end;
+    // Focus time insight
+    const focusHours = analyticsData.pomodoro.totalFocusTime / 3600;
+    if (focusHours >= 4) {
+        insights.push({
+            icon: 'clock',
+            title: 'Deep Focus Achievement',
+            message: `You've maintained ${Math.round(focusHours)} hours of focused work. Excellent discipline!`
         });
-        
-        if (previousTasks.length > 0) {
-            const previousCompleted = previousTasks.filter(task => task.completed).length;
-            const previousRate = Math.round((previousCompleted / previousTasks.length) * 100);
-            
-            const difference = completionRate - previousRate;
-            
-            if (difference > 5) {
-                insights.push(`Your task completion rate has improved by ${difference}% compared to the previous period. Great job!`);
-            } else if (difference < -5) {
-                insights.push(`Your task completion rate has decreased by ${Math.abs(difference)}% compared to the previous period.`);
-            } else {
-                insights.push(`Your task completion rate has remained stable at around ${completionRate}%.`);
-            }
-        } else {
-            insights.push(`Your current task completion rate is ${completionRate}%.`);
-        }
     }
     
-    // Mood correlation with productivity
-    if (filteredData.diary.length > 3) {
-        const moodProductivity = {
-            great: [],
-            good: [],
-            neutral: [],
-            bad: [],
-            terrible: []
-        };
-        
-        filteredData.diary.forEach(entry => {
-            if (moodProductivity.hasOwnProperty(entry.mood)) {
-                moodProductivity[entry.mood].push(entry.productivity);
-            }
-        });
-        
-        const moodAvgs = {};
-        let highestMood = null;
-        let highestAvg = 0;
-        
-        Object.keys(moodProductivity).forEach(mood => {
-            if (moodProductivity[mood].length > 0) {
-                const sum = moodProductivity[mood].reduce((a, b) => a + b, 0);
-                const avg = sum / moodProductivity[mood].length;
-                moodAvgs[mood] = avg;
-                
-                if (avg > highestAvg) {
-                    highestAvg = avg;
-                    highestMood = mood;
-                }
-            }
-        });
-        
-        if (highestMood) {
-            insights.push(`You tend to be most productive when you're feeling ${highestMood} (${highestAvg.toFixed(1)}/10).`);
-        }
-    }
-    
-    return insights;
+    // Display insights
+    displayInsights(insights);
 }
 
-// Get previous date range for comparison
-function getPreviousDateRange() {
-    const currentRange = getDateRange();
-    const duration = currentRange.end - currentRange.start;
+// Display Insights
+function displayInsights(insights) {
+    const container = document.querySelector('.insights-container');
+    if (!container) return;
     
-    const end = new Date(currentRange.start);
-    end.setMilliseconds(end.getMilliseconds() - 1);
-    
-    const start = new Date(end);
-    start.setTime(start.getTime() - duration);
-    
-    return { start, end };
-}
-
-// Display insights in the UI
-function displayInsights() {
-    const insightsContainer = document.querySelector('.analytics-insights');
-    if (!insightsContainer) return;
-    
-    const insights = generateProductivityInsights();
-    
-    if (insights.length === 0) {
-        insightsContainer.innerHTML = '<p>Not enough data to generate insights yet. Keep using the app!</p>';
-        return;
-    }
-    
-    insightsContainer.innerHTML = '<h3>Productivity Insights</h3><ul>' + 
-        insights.map(insight => `<li>${insight}</li>`).join('') + 
-        '</ul>';
-}
-
-// Export analytics data
-function getAnalyticsData() {
-    return analyticsData;
+    container.innerHTML = insights.map(insight => `
+        <div class="insight-card">
+            <div class="insight-icon">
+                <i class="fas fa-${insight.icon}"></i>
+            </div>
+            <div class="insight-content">
+                <h4>${insight.title}</h4>
+                <p>${insight.message}</p>
+            </div>
+        </div>
+    `).join('');
 }
 
 // Initialize analytics when DOM is loaded

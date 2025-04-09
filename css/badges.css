@@ -31,23 +31,208 @@
 
 .badges-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-    gap: var(--spacing-lg);
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: var(--spacing-md);
+    padding: var(--spacing-md);
 }
 
 /* Badge Card */
 .badge-card {
+    background-color: var(--bg-primary);
+    border-radius: var(--border-radius-md);
+    padding: var(--spacing-md);
+    box-shadow: 0 2px 8px var(--shadow-color);
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    padding: var(--spacing-md);
+    text-align: center;
+    gap: var(--spacing-sm);
     cursor: pointer;
-    transition: transform var(--transition-normal);
+    transition: all var(--transition-fast);
 }
 
 .badge-card:hover {
-    transform: translateY(-5px);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px var(--shadow-color);
+}
+
+.badge-card .badge-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background-color: rgba(108, 92, 231, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary-color);
+    margin-bottom: var(--spacing-sm);
+}
+
+.badge-card.locked {
+    opacity: 0.7;
+    filter: grayscale(1);
+}
+
+.badge-card.locked .badge-icon {
+    background-color: rgba(0, 0, 0, 0.1);
+    color: var(--text-secondary);
+}
+
+.badge-card h3 {
+    font-size: 1rem;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-xs);
+}
+
+.badge-card p {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    line-height: 1.4;
+}
+
+.badge-card .unlock-date {
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+    margin-top: auto;
+}
+
+/* Badge Categories */
+.badge-categories {
+    display: flex;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-lg);
+    padding: 0 var(--spacing-md);
+}
+
+.badge-category {
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--border-radius-md);
+    background-color: var(--bg-secondary);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.badge-category:hover {
+    background-color: rgba(108, 92, 231, 0.1);
+    color: var(--primary-color);
+}
+
+.badge-category.active {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+/* Badge Progress */
+.badge-progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background-color: var(--bg-secondary);
+    border-radius: 0 0 var(--border-radius-md) var(--border-radius-md);
+    overflow: hidden;
+}
+
+.badge-progress-bar {
+    height: 100%;
+    background-color: var(--primary-color);
+    transition: width var(--transition-normal);
+}
+
+/* Badge Colors */
+.badge-card[data-color="blue"] .badge-icon {
+    background-color: rgba(66, 153, 225, 0.1);
+    color: #4299E1;
+}
+
+.badge-card[data-color="green"] .badge-icon {
+    background-color: rgba(72, 187, 120, 0.1);
+    color: #48BB78;
+}
+
+.badge-card[data-color="purple"] .badge-icon {
+    background-color: rgba(159, 122, 234, 0.1);
+    color: #9F7AEA;
+}
+
+.badge-card[data-color="yellow"] .badge-icon {
+    background-color: rgba(236, 201, 75, 0.1);
+    color: #ECC94B;
+}
+
+.badge-card[data-color="orange"] .badge-icon {
+    background-color: rgba(237, 137, 54, 0.1);
+    color: #ED8936;
+}
+
+.badge-card[data-color="red"] .badge-icon {
+    background-color: rgba(245, 101, 101, 0.1);
+    color: #F56565;
+}
+
+.badge-card[data-color="teal"] .badge-icon {
+    background-color: rgba(56, 178, 172, 0.1);
+    color: #38B2AC;
+}
+
+.badge-card[data-color="pink"] .badge-icon {
+    background-color: rgba(237, 100, 166, 0.1);
+    color: #ED64A6;
+}
+
+/* Badge Notifications */
+.badge-notification {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: var(--bg-primary);
+    border-radius: var(--border-radius-lg);
+    padding: var(--spacing-md);
+    box-shadow: 0 4px 15px var(--shadow-color);
+    z-index: 1000;
+    min-width: 300px;
+    max-width: 400px;
+}
+
+.badge-notification-content {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.badge-notification .badge-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background-color: rgba(108, 92, 231, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary-color);
+}
+
+.badge-notification .badge-info {
+    flex: 1;
+}
+
+.badge-notification h3 {
+    font-size: 1rem;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-xs);
+}
+
+.badge-notification h4 {
+    font-size: 0.9rem;
+    color: var(--primary-color);
+    margin-bottom: var(--spacing-xs);
+}
+
+.badge-notification p {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    line-height: 1.4;
 }
 
 /* Badge Icon Container */
@@ -280,74 +465,6 @@
 
 .badge-modal-btn:hover {
     background-color: var(--secondary-color);
-}
-
-/* Badge Notification */
-.badge-notification {
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: var(--bg-primary);
-    border-radius: var(--border-radius-lg);
-    padding: var(--spacing-md);
-    box-shadow: 0 4px 20px var(--shadow-color);
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-md);
-    z-index: 1001;
-    animation: slideUp 0.5s ease-out;
-}
-
-@keyframes slideUp {
-    from {
-        transform: translate(-50%, 100px);
-        opacity: 0;
-    }
-    to {
-        transform: translate(-50%, 0);
-        opacity: 1;
-    }
-}
-
-.badge-notification-icon {
-    width: 60px;
-    height: 60px;
-    position: relative;
-}
-
-.badge-notification-content {
-    flex: 1;
-}
-
-.badge-notification-title {
-    font-size: 1.2rem;
-    font-weight: 600;
-    margin: 0 0 var(--spacing-xs) 0;
-    color: var(--text-primary);
-}
-
-.badge-notification-message {
-    font-size: 0.9rem;
-    color: var(--text-secondary);
-    margin: 0;
-}
-
-.badge-notification-close {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--text-secondary);
-    cursor: pointer;
-    transition: all var(--transition-fast);
-}
-
-.badge-notification-close:hover {
-    background-color: var(--bg-secondary);
-    color: var(--danger-color);
 }
 
 /* Responsive Styles */

@@ -57,20 +57,20 @@ let settings = {
     autoPauseLofi: false
 };
 
-// Lofi Music Tracks
+// Lofi Tracks
 const lofiTracks = {
     'lofi-beats': 'https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=lofi-study-112191.mp3',
     'study-vibes': 'https://cdn.pixabay.com/download/audio/2022/01/18/audio_d0c6c9e0a1.mp3?filename=lofi-chill-14093.mp3',
-    'chill-hop': 'https://cdn.pixabay.com/download/audio/2021/11/23/audio_cb5c6be7d2.mp3?filename=lofi-hip-hop-11489.mp3',
-    'nature-sounds': 'https://cdn.pixabay.com/download/audio/2021/09/06/audio_7b3c4eaf05.mp3?filename=forest-with-small-river-birds-and-nature-field-recording-6735.mp3',
-    'rain-sounds': 'https://cdn.pixabay.com/download/audio/2021/08/09/audio_d1a7ee9c87.mp3?filename=light-rain-ambient-114364.mp3',
-    'jazz-lofi': 'https://cdn.pixabay.com/download/audio/2022/10/25/audio_200a31551d.mp3?filename=lofi-jazz-114586.mp3',
-    'piano-ambient': 'https://cdn.pixabay.com/download/audio/2022/01/27/audio_520e9d4ebb.mp3?filename=ambient-piano-logo-165357.mp3',
-    'meditation': 'https://cdn.pixabay.com/download/audio/2022/03/09/audio_c3b4f3b6c5.mp3?filename=meditation-112191.mp3',
-    'coffee-shop': 'https://cdn.pixabay.com/download/audio/2022/08/23/audio_d16737dc28.mp3?filename=coffee-shop-ambience-6863.mp3',
-    'ocean-waves': 'https://cdn.pixabay.com/download/audio/2022/03/15/audio_942d0c0cfc.mp3?filename=ocean-waves-112728.mp3',
-    'fireplace': 'https://cdn.pixabay.com/download/audio/2022/01/18/audio_d0d699d48e.mp3?filename=fireplace-crackling-noise-113739.mp3',
-    'night-sounds': 'https://cdn.pixabay.com/download/audio/2022/01/17/audio_f1b4f4c49e.mp3?filename=night-forest-crickets-wind-and-light-rain-nature-field-recording-6735.mp3'
+    'chill-hop': 'https://cdn.pixabay.com/download/audio/2022/03/25/audio_c9a4a1d538.mp3?filename=chill-hip-hop-beat-11254.mp3',
+    'jazz-lofi': 'https://cdn.pixabay.com/download/audio/2022/05/16/audio_7937c12c78.mp3?filename=jazz-loop-11430.mp3',
+    'piano-ambient': 'https://cdn.pixabay.com/download/audio/2022/04/27/audio_f1e8010671.mp3?filename=piano-ambient-11470.mp3',
+    'meditation': 'https://cdn.pixabay.com/download/audio/2022/03/25/audio_c9a4a1d538.mp3?filename=meditation-11254.mp3',
+    'coffee-shop': 'https://cdn.pixabay.com/download/audio/2022/05/13/audio_944392aa1f.mp3?filename=coffee-shop-ambience-11415.mp3',
+    'nature-sounds': 'https://cdn.pixabay.com/download/audio/2022/04/07/audio_b2e3336c1a.mp3?filename=forest-with-birds-11237.mp3',
+    'rain-sounds': 'https://cdn.pixabay.com/download/audio/2022/03/24/audio_c8f3e5dc21.mp3?filename=rain-ambient-11251.mp3',
+    'ocean-waves': 'https://cdn.pixabay.com/download/audio/2022/04/07/audio_944392aa1f.mp3?filename=ocean-waves-11415.mp3',
+    'fireplace': 'https://cdn.pixabay.com/download/audio/2022/03/25/audio_c9a4a1d538.mp3?filename=fireplace-11254.mp3',
+    'night-sounds': 'https://cdn.pixabay.com/download/audio/2022/04/07/audio_b2e3336c1a.mp3?filename=night-sounds-11237.mp3'
 };
 
 // Initialize Pomodoro Timer
@@ -93,6 +93,11 @@ function initPomodoro() {
     // Event Listener for Settings
     saveSettingsBtn.addEventListener('click', saveSettings);
     
+    // Event Listeners for instant duration updates
+    pomodoroDuration.addEventListener('input', () => updateDuration('pomodoro'));
+    shortBreakDuration.addEventListener('input', () => updateDuration('shortBreak'));
+    longBreakDuration.addEventListener('input', () => updateDuration('longBreak'));
+    
     // Request notification permission
     if (Notification.permission !== 'granted' && Notification.permission !== 'denied') {
         Notification.requestPermission();
@@ -100,6 +105,50 @@ function initPomodoro() {
     
     // Initialize breathing animation for idle state
     startBreathingAnimation();
+}
+
+// Update duration instantly when input changes
+function updateDuration(mode) {
+    let newDuration;
+    switch (mode) {
+        case 'pomodoro':
+            newDuration = Math.max(1, Math.min(60, parseInt(pomodoroDuration.value) || 25));
+            settings.pomodoroDuration = newDuration;
+            if (timerMode === 'pomodoro' && !timerRunning) {
+                totalTime = newDuration * 60;
+                timeLeft = totalTime;
+                updateTimerDisplay();
+                updateProgressRing(1);
+            }
+            break;
+        case 'shortBreak':
+            newDuration = Math.max(1, Math.min(30, parseInt(shortBreakDuration.value) || 5));
+            settings.shortBreakDuration = newDuration;
+            if (timerMode === 'shortBreak' && !timerRunning) {
+                totalTime = newDuration * 60;
+                timeLeft = totalTime;
+                updateTimerDisplay();
+                updateProgressRing(1);
+            }
+            break;
+        case 'longBreak':
+            newDuration = Math.max(1, Math.min(60, parseInt(longBreakDuration.value) || 15));
+            settings.longBreakDuration = newDuration;
+            if (timerMode === 'longBreak' && !timerRunning) {
+                totalTime = newDuration * 60;
+                timeLeft = totalTime;
+                updateTimerDisplay();
+                updateProgressRing(1);
+            }
+            break;
+    }
+    
+    // Save settings to localStorage
+    try {
+        localStorage.setItem('pomodoroSettings', JSON.stringify(settings));
+    } catch (error) {
+        console.error('Error saving settings to localStorage:', error);
+    }
 }
 
 // Set Timer Mode
@@ -644,33 +693,73 @@ function initLofiPlayer() {
     
     try {
         // Set source and load the audio
-        lofiPlayer.src = lofiTracks[initialTrack];
+        const sourceElement = lofiPlayer.querySelector('source');
+        if (sourceElement) {
+            sourceElement.src = lofiTracks[initialTrack];
+        }
         lofiPlayer.volume = volumeSlider ? volumeSlider.value / 100 : 0.5;
         lofiPlayer.load();
         
-        // Preload all tracks for faster switching
-        Object.keys(lofiTracks).forEach(trackKey => {
-            if (trackKey !== initialTrack) {
-                const audio = new Audio();
-                audio.preload = 'metadata';
-                audio.src = lofiTracks[trackKey];
+        // Add event listeners for better error handling
+        lofiPlayer.addEventListener('error', (e) => {
+            console.error('Audio error:', e);
+            const errorMessage = getAudioErrorMessage(e.target.error);
+            displayNotification('Audio Error', errorMessage, 'error');
+            
+            // Try to recover by switching to another track
+            if (lofiTrackSelect) {
+                const currentIndex = lofiTrackSelect.selectedIndex;
+                const nextIndex = (currentIndex + 1) % lofiTrackSelect.options.length;
+                lofiTrackSelect.selectedIndex = nextIndex;
+                changeTrack();
             }
+        });
+        
+        lofiPlayer.addEventListener('canplay', () => {
+            console.log('Audio can play');
+            if (isPlaying) {
+                lofiPlayer.play()
+                    .catch(error => console.error('Error auto-resuming playback:', error));
+            }
+        });
+        
+        lofiPlayer.addEventListener('ended', () => {
+            console.log('Track ended, playing next');
+            playNextTrack();
         });
         
         console.log('Lofi player initialized successfully');
     } catch (error) {
         console.error('Error initializing lofi player:', error);
     }
+}
+
+// Helper function to get readable error messages
+function getAudioErrorMessage(error) {
+    if (!error) return 'Unknown error occurred';
     
-    // Add event listener for audio errors
-    lofiPlayer.addEventListener('error', (e) => {
-        console.error('Audio error:', e);
-        displayNotification(
-            'Audio Error', 
-            'There was an error loading the audio track. Please try another track.', 
-            'error'
-        );
-    });
+    switch (error.code) {
+        case MediaError.MEDIA_ERR_ABORTED:
+            return 'Playback was aborted by the user';
+        case MediaError.MEDIA_ERR_NETWORK:
+            return 'A network error occurred while loading the audio';
+        case MediaError.MEDIA_ERR_DECODE:
+            return 'The audio could not be decoded';
+        case MediaError.MEDIA_ERR_SRC_NOT_SUPPORTED:
+            return 'The audio format is not supported';
+        default:
+            return 'An unknown error occurred';
+    }
+}
+
+// Play next track in the list
+function playNextTrack() {
+    if (!lofiTrackSelect) return;
+    
+    const currentIndex = lofiTrackSelect.selectedIndex;
+    const nextIndex = (currentIndex + 1) % lofiTrackSelect.options.length;
+    lofiTrackSelect.selectedIndex = nextIndex;
+    changeTrack();
 }
 
 // Toggle Lofi Music
@@ -687,16 +776,6 @@ function toggleLofi() {
         console.log('Music paused');
     } else {
         // Play music
-        const selectedTrack = lofiTrackSelect ? lofiTrackSelect.value : 'lofi-beats';
-        
-        // Make sure the correct track is loaded
-        if (!lofiPlayer.src || lofiPlayer.src === '') {
-            console.log('Setting initial track:', selectedTrack);
-            lofiPlayer.src = lofiTracks[selectedTrack];
-            lofiPlayer.load();
-        }
-        
-        // Play with error handling
         const playPromise = lofiPlayer.play();
         
         if (playPromise !== undefined) {
@@ -712,13 +791,8 @@ function toggleLofi() {
                     displayNotification('Now Playing', trackName, 'info');
                 }
             }).catch(error => {
-                // Autoplay was prevented
                 console.error('Error playing audio:', error);
-                displayNotification(
-                    'Playback Error', 
-                    'There was an issue playing the audio. Please try again.', 
-                    'error'
-                );
+                handlePlaybackError();
             });
         }
     }
@@ -735,7 +809,6 @@ function toggleLofi() {
 // Change Volume
 function changeVolume() {
     if (!lofiPlayer || !volumeSlider) return;
-    
     lofiPlayer.volume = volumeSlider.value / 100;
 }
 
@@ -746,52 +819,60 @@ function changeTrack() {
     const wasPlaying = isPlaying;
     const selectedTrack = lofiTrackSelect.value;
     
-    // Log for debugging
     console.log(`Changing track to: ${selectedTrack}`);
-    console.log(`Track URL: ${lofiTracks[selectedTrack]}`);
     
     // Pause current track
     if (isPlaying) {
         lofiPlayer.pause();
     }
     
-    // Set new track
-    lofiPlayer.src = lofiTracks[selectedTrack];
-    lofiPlayer.load();
+    // Update source element
+    const sourceElement = lofiPlayer.querySelector('source');
+    if (sourceElement) {
+        sourceElement.src = lofiTracks[selectedTrack];
+        lofiPlayer.load();
+    }
     
     // Resume playing if it was playing before
     if (wasPlaying) {
-        // Add a small delay to ensure the audio is loaded
-        setTimeout(() => {
-            const playPromise = lofiPlayer.play();
-            
-            // Handle play promise to catch any autoplay restrictions
-            if (playPromise !== undefined) {
-                playPromise.then(() => {
+        const playPromise = lofiPlayer.play();
+        
+        if (playPromise !== undefined) {
+            playPromise
+                .then(() => {
                     console.log('Track playing successfully');
-                }).catch(error => {
-                    console.error('Error playing track:', error);
-                    // Inform user about autoplay restrictions
-                    displayNotification(
-                        'Autoplay Blocked', 
-                        'Please click the Play button to start the music.', 
-                        'info'
-                    );
-                    isPlaying = false;
+                    isPlaying = true;
                     if (toggleLofiBtn) {
-                        toggleLofiBtn.innerHTML = '<i class="fas fa-play"></i> Play Music';
+                        toggleLofiBtn.innerHTML = '<i class="fas fa-pause"></i> Pause Music';
                     }
+                })
+                .catch(error => {
+                    console.error('Error playing track:', error);
+                    handlePlaybackError();
                 });
-            }
-        }, 300);
+        }
     }
     
     // Show notification about track change
+    const trackName = lofiTrackSelect.options[lofiTrackSelect.selectedIndex].text;
+    displayNotification('Track Changed', `Now playing: ${trackName}`, 'info');
+}
+
+// Handle playback errors
+function handlePlaybackError() {
+    isPlaying = false;
+    if (toggleLofiBtn) {
+        toggleLofiBtn.innerHTML = '<i class="fas fa-play"></i> Play Music';
+    }
+    
     displayNotification(
-        'Track Changed', 
-        `Now playing: ${lofiTrackSelect.options[lofiTrackSelect.selectedIndex].text}`, 
-        'info'
+        'Playback Error',
+        'Unable to play the track. Trying another one...',
+        'warning'
     );
+    
+    // Try the next track
+    setTimeout(playNextTrack, 1000);
 }
 
 // Handle Lofi with Timer

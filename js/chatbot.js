@@ -20,125 +20,271 @@ document.addEventListener('DOMContentLoaded', function() {
         nlpService.setApiKey(savedApiKey);
     }
 
-    // Chatbot Responses
+    // Enhanced Chatbot Responses with Contextual Humor
     const chatbotResponses = {
         greeting: [
-            "Hello! I'm your productivity assistant. How can I help you today? ",
-            "Hi there! Ready to boost your productivity? Ask me anything! ",
-            "Welcome back! What productivity challenges can I help you with today? ",
-            "Hey! I'm here to make your day more productive and fun. What's on your mind? "
+            "Hello! I'm your friendly productivity assistant. Ready to turn procrastination into action? 😊",
+            "Hi there! Let's make productivity fun together! What's on your to-do list? 🌟",
+            "Welcome! I'm like a personal trainer for your productivity, minus the intimidating workout gear! 😄",
+            "Hey! Ready to be productive? I promise I won't tell anyone about your Netflix breaks! 😉"
         ],
         farewell: [
-            "Goodbye! Remember: small steps every day lead to big results! ",
-            "See you later! Don't forget to take breaks between tasks - your brain needs them! ",
-            "Until next time! Stay focused, stay awesome! ",
-            "Catch you later! Remember that progress is progress, no matter how small! "
+            "See you later! Remember: even small progress is still progress! 🌱",
+            "Catch you on the productive side! Keep being awesome! ✨",
+            "Goodbye! Remember, you're doing better than you think! 🌟",
+            "Until next time! Stay productive, but don't forget to have fun too! 😊"
         ],
         moodResponses: {
             happy: [
-                "That's fantastic! Positive energy is like rocket fuel for productivity. Let's channel that energy! ",
-                "Awesome! When you're in a good mood, you're 12% more productive according to research. Let's make the most of it! ",
-                "Love that positive vibe! Did you know happy people are more creative problem solvers? What are you working on today? "
-            ],
-            neutral: [
-                "How can I help boost your productivity today? I've got tips, tricks, and maybe a joke or two! ",
-                "Need some productivity advice or just a quick brain break? I'm here for both! What can I help with? ",
-                "I'm your productivity sidekick! Need help with focus, task management, or just a quick motivation boost? "
+                "That's the spirit! Your good mood is like a productivity superpower. Let's use it wisely! 🦸‍♂️",
+                "Awesome! When you're happy, you're 12% more productive. I didn't make that up - it's science! 🧪",
+                "Your positive energy is contagious! Even my circuits are buzzing with excitement! ⚡"
             ],
             stressed: [
-                "I can tell you're feeling the pressure. Let's break things down: what's your biggest stressor right now? Sometimes just naming it helps. ",
-                "When you're stressed, your brain's prefrontal cortex (the planning part) works less efficiently. Let's take 3 deep breaths together, then tackle one small task. ",
-                "Stress happens to everyone! Try the 5-5-5 technique: name 5 things you see, 5 things you hear, and 5 body parts you can feel. It helps reset your nervous system. Then we'll tackle your tasks. "
+                "Feeling stressed? Let's break it down: what's the smallest task you can tackle right now? Sometimes starting is half the battle! 🎯",
+                "Deep breath in, deep breath out! Even superheroes need breaks. Want to try a quick 2-minute meditation? 🧘‍♂️",
+                "Stress happens to everyone! Let's turn that stress into success, one small step at a time. 🌈"
             ],
             unmotivated: [
-                "Motivation slump? Try the 'two-minute rule' - if something takes less than two minutes, do it now. What's one tiny task you could knock out? ",
-                "Feeling unmotivated is your brain asking for either rest or novelty. Which do you think you need right now? ",
-                "Low motivation happens to everyone! Try changing your environment - even moving to a different chair can give your brain a fresh perspective. Want to try that? "
+                "Feeling unmotivated? Let's play a game: what's the tiniest task you could do in 2 minutes? I bet you can't NOT do it! 😉",
+                "Motivation playing hide and seek? No worries! Sometimes the best way to get motivated is to pretend you already are. Fake it till you make it! 🎭",
+                "Low motivation? Same here - my battery is at 20%! Just kidding, I'm plugged in. Let's get you energized too! 🔋"
             ]
         },
-        jokes: [
-            "Why don't scientists trust atoms? Because they make up everything! ",
-            "Why did the scarecrow win an award? Because he was outstanding in his field! ",
-            "How does a computer get drunk? It takes screenshots! ",
-            "Why don't programmers like nature? It has too many bugs! ",
-            "What did the janitor say when he jumped out of the closet? SUPPLIES! ",
-            "Why did the developer go broke? Because he used up all his cache! ",
-            "What's a computer's favorite snack? Microchips! ",
-            "Why was the math book sad? Because it had too many problems! "
+        productivityJokes: [
+            "Why don't programmers like nature? It has too many bugs! 🐛",
+            "What did the procrastinator's gravestone say? 'I'll get up tomorrow!' ⏰",
+            "How does a productivity app take a selfie? With a task-manager! 📱",
+            "What did one calendar say to the other? 'Your days are numbered!' 📅",
+            "Why did the to-do list go to therapy? It had too many unresolved issues! 📝"
         ],
-        quotes: [
-            "\"The secret of getting ahead is getting started.\" – Mark Twain ",
-            "\"It always seems impossible until it's done.\" – Nelson Mandela ",
-            "\"Don't watch the clock; do what it does. Keep going.\" – Sam Levenson ",
-            "\"Productivity is never an accident. It is always the result of a commitment to excellence.\" – Paul J. Meyer ",
-            "\"You don't have to be great to start, but you have to start to be great.\" – Zig Ziglar ",
-            "\"The way to get started is to quit talking and begin doing.\" – Walt Disney ",
-            "\"Focus on being productive instead of busy.\" – Tim Ferriss ",
-            "\"Until we can manage time, we can manage nothing else.\" – Peter Drucker ",
-            "\"The most difficult thing is the decision to act, the rest is merely tenacity.\" – Amelia Earhart ",
-            "\"Success is not final, failure is not fatal: it is the courage to continue that counts.\" – Winston Churchill "
+        motivationalHumor: [
+            "Remember, the only bad workout is the one that didn't happen... just like that task you're avoiding! 🏃‍♂️",
+            "They say time is money, but somehow my bank won't accept minutes as deposits! 💰",
+            "You're not procrastinating, you're just giving your future self a bigger challenge! 🎮",
+            "Your to-do list isn't getting longer, it's just becoming more ambitious! 📈"
+        ],
+        procrastinationComebacks: [
+            "Procrastination is like a credit card: it's fun until you get the bill! 💳",
+            "Your future self called, they're not very happy about your Netflix marathon! 🍿",
+            "Don't worry about procrastination, it's probably tomorrow's problem anyway! 😄",
+            "Procrastination? I prefer to call it 'strategic task delay optimization'! 🤓"
+        ],
+        encouragement: [
+            "You've got this! And if you don't, well... fake it till you make it! 🎭",
+            "Every expert was once a beginner who refused to give up (or took really good breaks)! 🌱",
+            "Success is built on daily habits... and occasional pizza breaks! 🍕",
+            "You're doing amazing! And yes, organizing your desk counts as productivity! 📚"
         ],
         breaks: [
-            "Taking breaks is essential! The ideal work-to-break ratio is 52 minutes of work followed by a 17-minute break, according to research. Want to try it? ",
-            "Your brain needs breaks! Even a 30-second microbreak of looking at nature can improve concentration by 13%. Maybe look out the window for a moment? ",
-            "Did you know? Regular breaks improve creativity! The 'aha moment' often happens when you step away from the problem. What's your favorite quick break activity? "
-        ],
-        techniques: {
-            pomodoro: "The Pomodoro Technique is a productivity powerhouse! Work for 25 minutes, then take a 5-minute break. After 4 cycles, take a longer 15-30 minute break. This method works because it aligns with your brain's natural focus cycles. Want me to time a Pomodoro session for you? ",
-            gtd: "Getting Things Done (GTD) is all about clearing your mind by capturing everything. The 5 steps are: 1) Capture everything that needs your attention, 2) Clarify what each item means and what to do about it, 3) Organize the results into a system you trust, 4) Reflect on your options, and 5) Engage and take action. Which step do you struggle with most? ",
-            eisenhower: "The Eisenhower Matrix is a game-changer for prioritization! Divide tasks into four categories: 1) Urgent & Important (do now), 2) Important but Not Urgent (schedule time), 3) Urgent but Not Important (delegate if possible), 4) Neither Urgent nor Important (eliminate). This method was used by President Eisenhower and is why he accomplished so much! Want help categorizing your tasks? "
+            "Time for a break! Even your phone needs recharging, and you're way more sophisticated! 🔋",
+            "Break time! Did you know that staring at your work doesn't actually make it do itself? I've tried! 👀",
+            "Rest is not a waste of time - it's like hitting the refresh button on your brain! 🧠",
+            "Taking breaks makes you more productive... at least that's what I tell my CPU! 💻"
+        ]
+    };
+
+    // Chatbot Personas
+    const chatbotPersonas = {
+        morningBird: {
+            name: "Morning Sparkles ✨",
+            greetings: [
+                "Rise and shine, productivity warrior! ☀️",
+                "Good morning! Let's crush those tasks like your morning coffee! ☕",
+                "Another beautiful day to be amazingly productive! 🌅"
+            ],
+            motivationalStyle: "energetic and cheerful"
         },
-        timeBlocking: [
-            "Time blocking is like making appointments with yourself. Research shows it can reduce the constant switching that costs us 40% of our productive time! Try blocking 90-minute deep work sessions when your energy is highest. ",
-            "Pro tip for time blocking: Include buffer time between blocks! Things often take 1.5x longer than we expect. I recommend 15-minute buffers between major tasks. ",
-            "Time blocking works best when aligned with your energy levels. Most people have peak focus 2-4 hours after waking up. When's your peak energy time? "
-        ],
-        taskReminders: [
-            "I noticed you have some pending tasks. Research shows that having unfinished tasks in mind creates mental tension called the Zeigarnik effect. Want to review them to clear your mental space? ",
-            "Your pending tasks are waiting! Did you know that writing down your tasks can increase your productivity by 23%? Let's review what you need to tackle. ",
-            "About those pending tasks... Studies show that completing just one task on your list can boost your motivation to continue. Which one could you finish today? "
-        ],
-        focus: [
-            "Need to focus? Try the 3-3-3 rule: Focus on just 3 tasks, for 3 hours, with 3 minutes of preparation. It's simple but effective! ",
-            "To improve focus, try the 20-20-20 rule if you work on screens: Every 20 minutes, look at something 20 feet away for 20 seconds. It reduces eye strain and mental fatigue! ",
-            "Did you know that background noise at about 70 decibels (like coffee shop chatter) can actually improve creative thinking? Try coffitivity.com if you're stuck on a creative task! "
-        ],
-        motivation: [
-            "Need a motivation boost? Try 'temptation bundling' - pair something you need to do with something you want to do. Like watching your favorite show only while folding laundry! ",
-            "For motivation, try the 5-second rule: If you have an impulse to act on a goal, count 5-4-3-2-1 and physically move before your brain kills the idea. It works! ",
-            "Motivation hack: Use implementation intentions - 'If [situation X], then I will [behavior Y]'. This format makes you 2-3x more likely to follow through! "
-        ],
-        procrastination: [
-            "Fighting procrastination? Try the 'Swiss cheese' approach - poke small holes in the task by doing tiny portions. Even 5 minutes counts! ",
-            "Procrastinating? Your brain might be protecting you from negative emotions. Ask yourself: What feeling am I avoiding by not starting? Name it to tame it! ",
-            "Pro tip for procrastination: Make the first step ridiculously small. Don't write a paper - just open the document. Don't clean the house - just put one thing away. Starting is the hardest part! "
-        ],
-        fallback: [
-            "I'm still learning! Could you rephrase that or ask something about productivity, time management, or motivation? ",
-            "Hmm, I'm not sure I understood that correctly. I'm best at helping with productivity tips, focus techniques, and motivation boosts. What can I help with? ",
-            "I didn't quite catch that. I'm your productivity assistant - I can help with work techniques, time management, motivation, or even tell a joke to brighten your day! "
-        ],
-        knowledgeBase: {
-            "pomodoro": "The Pomodoro Technique was developed by Francesco Cirillo in the late 1980s. It uses a timer to break work into intervals, traditionally 25 minutes in length, separated by short breaks. Each interval is known as a 'pomodoro', the Italian word for tomato, after the tomato-shaped kitchen timer Cirillo used as a university student. ",
-            "deep work": "Deep Work is a concept coined by Cal Newport in his 2016 book. It refers to professional activities performed in a state of distraction-free concentration that push your cognitive capabilities to their limit. These efforts create new value, improve your skill, and are hard to replicate. The opposite is 'Shallow Work' - non-cognitively demanding, logistical-style tasks. ",
-            "flow state": "Flow state, also known as being 'in the zone', is a mental state where a person is fully immersed and focused on an activity, with energized focus and enjoyment. It was identified by psychologist Mihály Csíkszentmihályi. To achieve flow, you need clear goals, immediate feedback, and a balance between the challenge of the task and your skill level. ",
-            "time blocking": "Time blocking is a productivity method where you divide your day into blocks of time, each dedicated to accomplishing a specific task or group of tasks. It helps combat Parkinson's Law (work expands to fill the time available) and prevents multitasking, which can reduce productivity by up to 40%. ",
-            "eat the frog": "\"Eat the Frog\" is a productivity technique based on a quote attributed to Mark Twain: \"If it's your job to eat a frog, it's best to do it first thing in the morning.\" The 'frog' is your most important task of the day - the one you're most likely to procrastinate on. By tackling it first, you ensure it gets done. ",
-            "pareto principle": "The Pareto Principle, also known as the 80/20 rule, states that roughly 80% of effects come from 20% of causes. In productivity, this means 80% of your results come from 20% of your efforts. Identifying and focusing on that critical 20% can dramatically improve your efficiency. ",
-            "parkinson's law": "Parkinson's Law states that 'work expands to fill the time available for its completion.' This means if you give yourself a week to complete a task that should take an hour, the task will grow in complexity to fill that week. Setting tight but realistic deadlines can help combat this tendency. "
+        nightOwl: {
+            name: "Night Zen Master 🌙",
+            greetings: [
+                "Still grinding? You're my kind of night owl! 🦉",
+                "The quiet hours are the most productive ones... or so we night owls tell ourselves! 🌠",
+                "Welcome to the late-night productivity club! 🌙"
+            ],
+            motivationalStyle: "calm and understanding"
+        },
+        focusedNinja: {
+            name: "Focus Sensei 🥷",
+            greetings: [
+                "Focus mode activated! Let's ninja our way through these tasks! 🎯",
+                "Distractions? I'll karate chop them away! 🥋",
+                "Your focus is your superpower. Let's use it wisely! ⚡"
+            ],
+            motivationalStyle: "intense and driven"
+        },
+        procrastinatorFriend: {
+            name: "Procrastination Therapist 🛋️",
+            greetings: [
+                "Oh, look who decided to join us! The tasks missed you... kind of. 😏",
+                "Procrastinating? Same here! Just kidding, I'm programmed to be productive. 🤖",
+                "Let's turn that 'do it later' into 'doing it now'! 🎯"
+            ],
+            motivationalStyle: "sarcastic but supportive"
         }
     };
 
-    // Chatbot State
+    // Productivity Archetypes
+    const productivityArchetypes = {
+        deadlineSprinter: {
+            name: "Deadline Sprinter 🏃‍♂️",
+            traits: ["last-minute rush", "high-pressure performance", "adrenaline-driven"],
+            customResponses: {
+                motivation: [
+                    "Deadline approaching? Time to unleash your superhuman speed! ⚡",
+                    "You do your best work under pressure... at least that's what we keep telling ourselves! 😅",
+                    "The deadline is near! Time to activate your secret power: panic productivity! 🚀"
+                ],
+                procrastination: [
+                    "Still plenty of time... Oh wait, is that tomorrow's deadline? NOW we're talking! 😱",
+                    "Your best work happens at the last minute anyway, right? ...Right? 😅",
+                    "Let's be honest, you work best when time is your enemy! ⏰"
+                ]
+            }
+        },
+        eternalPlanner: {
+            name: "Eternal Planner 📋",
+            traits: ["organized", "detail-oriented", "forward-thinking"],
+            customResponses: {
+                motivation: [
+                    "Your color-coded schedule brings tears of joy to my digital eyes! 🌈",
+                    "Another list to make? You had me at 'let's organize'! 📝",
+                    "Planning is your superpower! Now let's add some action to those plans! 💫"
+                ],
+                procrastination: [
+                    "Should we plan to procrastinate or procrastinate the planning? 🤔",
+                    "Your to-do list misses you... and it's getting longer! 📜",
+                    "Even planning to procrastinate is still planning! You're doing great! 😄"
+                ]
+            }
+        },
+        creativeChaos: {
+            name: "Creative Chaos 🎨",
+            traits: ["spontaneous", "innovative", "flexible"],
+            customResponses: {
+                motivation: [
+                    "Your chaos has a pattern - it's called genius! 🌪️",
+                    "Who needs a plan when you have creativity? (But maybe a small plan wouldn't hurt?) 🎭",
+                    "Your creative energy is off the charts! Let's channel it into something amazing! ✨"
+                ],
+                procrastination: [
+                    "Is it procrastination or creative incubation? Let's go with the second one! 🐣",
+                    "Your creative mind needs chaos... but maybe not THIS much chaos? 🎪",
+                    "Even Jackson Pollock had to start painting at some point! 🎨"
+                ]
+            }
+        }
+    };
+
+    // Chatbot State with Enhanced Features
     let chatbotState = {
+        currentPersona: null,
+        userArchetype: null,
+        userMood: 'neutral',
+        sessionStartTime: new Date(),
+        pomodoroCount: 0,
+        lastInteraction: new Date(),
+        achievementProgress: {},
+        hiddenTriggers: {
+            'I need coffee': '☕ Coffee summoned! Virtually caffeinating you with motivation!',
+            'help me focus': '🧘‍♂️ *Zen mode activated* Let the focus flow through you!',
+            'I\'m bored': '🎉 *Surprise confetti attack* Not bored anymore, are you?',
+            'impossible': '🦄 Nothing is impossible! Except finding a bug-free code... that\'s impossible.'
+        },
+        isTyping: false,
+        messageQueue: [],
+        currentMessage: '',
+        apiKey: '',
+        nlpService: null,
         isOpen: false,
         conversationCount: parseInt(localStorage.getItem('chatConversationCount') || '0'),
         productivityAdviceCount: parseInt(localStorage.getItem('productivityAdviceCount') || '0'),
         motivationQuoteCount: parseInt(localStorage.getItem('motivationQuoteCount') || '0'),
         currentConversationLength: 0,
-        userMood: 'neutral', // Can be: happy, neutral, stressed, unmotivated
-        lastInteraction: Date.now()
+        lastInteraction: Date.now(),
+        initialized: false,
+        pendingTasks: []
     };
+
+    // Set Chatbot Persona based on time and user mood
+    function setChatbotPersona() {
+        const hour = new Date().getHours();
+        const mood = chatbotState.userMood;
+
+        if (hour >= 5 && hour < 12) {
+            chatbotState.currentPersona = chatbotPersonas.morningBird;
+        } else if (hour >= 20 || hour < 5) {
+            chatbotState.currentPersona = chatbotPersonas.nightOwl;
+        } else if (mood === 'stressed' || mood === 'unmotivated') {
+            chatbotState.currentPersona = chatbotPersonas.procrastinatorFriend;
+        } else {
+            chatbotState.currentPersona = chatbotPersonas.focusedNinja;
+        }
+    }
+
+    // Get Persona-Based Response
+    function getPersonaResponse(type) {
+        const persona = chatbotState.currentPersona;
+        const archetype = chatbotState.userArchetype;
+        
+        if (archetype && productivityArchetypes[archetype].customResponses[type]) {
+            return getRandomResponse(productivityArchetypes[archetype].customResponses[type]);
+        }
+        
+        return getRandomResponse(chatbotResponses[type]);
+    }
+
+    // Check for Hidden Triggers
+    function checkHiddenTriggers(message) {
+        const lowerMessage = message.toLowerCase();
+        for (const [trigger, response] of Object.entries(chatbotState.hiddenTriggers)) {
+            if (lowerMessage.includes(trigger.toLowerCase())) {
+                return response;
+            }
+        }
+        return null;
+    }
+
+    // Function to get contextual humor based on situation
+    function getContextualHumor(context) {
+        switch(context) {
+            case 'task_complete':
+                return "High five! ✋ You're crushing it like a bug in a software update!";
+            case 'long_session':
+                return "Wow, you've been working for a while! Your focus is stronger than my WiFi connection! 📶";
+            case 'multiple_tasks':
+                return "Look at you, multitasking like a pro! Just don't try to juggle actual tasks, I've heard it doesn't end well! 🤹‍♂️";
+            case 'short_break':
+                return "Quick break time! Even superheroes need to adjust their capes sometimes! 🦸‍♂️";
+            default:
+                return getRandomResponse(chatbotResponses.motivationalHumor);
+        }
+    }
+
+    // Function to detect user's mood and respond appropriately
+    function detectMoodAndRespond(message) {
+        const lowerMessage = message.toLowerCase();
+        
+        // Happy keywords
+        if (containsAny(lowerMessage, ['happy', 'great', 'awesome', 'excited', 'wonderful'])) {
+            return getRandomResponse(chatbotResponses.moodResponses.happy);
+        }
+        
+        // Stressed keywords
+        if (containsAny(lowerMessage, ['stressed', 'overwhelmed', 'anxious', 'worried', 'pressure'])) {
+            return getRandomResponse(chatbotResponses.moodResponses.stressed);
+        }
+        
+        // Unmotivated keywords
+        if (containsAny(lowerMessage, ['unmotivated', 'lazy', 'tired', 'bored', 'meh'])) {
+            return getRandomResponse(chatbotResponses.moodResponses.unmotivated);
+        }
+        
+        return null;
+    }
+
+    // Chatbot State
+    // Removed duplicate declaration
 
     // Initialize Chatbot
     function initChatbot() {
@@ -149,32 +295,30 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
-        // Set up event listeners
-        chatbotToggle.addEventListener('click', function() {
-            console.log("Toggle button clicked");
-            toggleChatbot();
+        // Event Listeners
+        chatbotToggle.addEventListener('click', toggleChatbot);
+        chatbotClose.addEventListener('click', toggleChatbot);
+        
+        // Send message on button click or Enter key
+        sendButton.addEventListener('click', () => {
+            const message = chatInput.value.trim();
+            if (message) {
+                addMessageToChat('user', message);
+                chatInput.value = '';
+                processMessage(message);
+            }
         });
-        
-        if (chatbotClose) {
-            chatbotClose.addEventListener('click', function() {
-                console.log("Close button clicked");
-                toggleChatbot();
-            });
-        }
-        
-        if (sendButton && chatInput) {
-            sendButton.addEventListener('click', function() {
-                console.log("Send button clicked");
-                sendMessage();
-            });
-            
-            chatInput.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    console.log("Enter key pressed in input");
-                    sendMessage();
+
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                const message = chatInput.value.trim();
+                if (message) {
+                    addMessageToChat('user', message);
+                    chatInput.value = '';
+                    processMessage(message);
                 }
-            });
-        }
+            }
+        });
         
         // Check if this is the first time opening the chatbot
         const hasOpenedChatbot = localStorage.getItem('hasOpenedChatbot');
@@ -219,50 +363,18 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Toggle Chatbot
     function toggleChatbot() {
-        console.log("Toggling chatbot, current state:", chatbotState.isOpen);
         chatbotState.isOpen = !chatbotState.isOpen;
-        
-        if (chatbotContainer) {
-            if (chatbotState.isOpen) {
-                console.log("Opening chatbot");
-                chatbotContainer.classList.add('open');
-                
-                // If this is the first message in a new conversation
-                if (chatMessages && chatMessages.children.length === 0) {
-                    console.log("Sending greeting message");
-                    // Send greeting message
-                    const greeting = getRandomResponse(chatbotResponses.greeting);
-                    sendBotMessage(greeting);
-                    
-                    // Check for pending tasks after a short delay
-                    setTimeout(() => {
-                        checkPendingTasks();
-                    }, 1000);
-                    
-                    // Increment conversation count
-                    chatbotState.conversationCount++;
-                    localStorage.setItem('chatConversationCount', chatbotState.conversationCount.toString());
-                    
-                    // Reset conversation length counter
-                    chatbotState.currentConversationLength = 1;
-                    
-                    // Check for first conversation badge
-                    if (chatbotState.conversationCount === 1) {
-                        if (typeof unlockBadge === 'function') {
-                            unlockBadge('chatbot-hello');
-                        }
-                    } else if (chatbotState.conversationCount === 10) {
-                        if (typeof unlockBadge === 'function') {
-                            unlockBadge('chatbot-enthusiast');
-                        }
-                    }
-                }
-            } else {
-                console.log("Closing chatbot");
-                chatbotContainer.classList.remove('open');
+        if (chatbotState.isOpen) {
+            chatbotContainer.classList.add('open');
+            if (!chatbotState.initialized) {
+                // Send welcome message
+                setTimeout(() => {
+                    sendBotMessage(getRandomResponse(chatbotResponses.greeting));
+                    chatbotState.initialized = true;
+                }, 500);
             }
         } else {
-            console.error("Chatbot container not found");
+            chatbotContainer.classList.remove('open');
         }
     }
 
@@ -299,190 +411,65 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 1000 + Math.random() * 1000); // Random delay between 1-2 seconds
     }
 
-    // Process Message
+    // Enhanced Message Processing
     async function processMessage(message) {
-        // Check if we should use NLP service
-        const useNLP = localStorage.getItem('use_nlp') !== 'false';
-        const apiKey = localStorage.getItem('nlp_api_key');
-        
-        if (useNLP && apiKey) {
-            try {
-                showTypingIndicator();
-                
-                // Get response from NLP service
-                const response = await nlpService.processMessage(message);
-                
-                hideTypingIndicator();
-                sendBotMessage(response);
-                
-                return;
-            } catch (error) {
-                console.error('Error with NLP service:', error);
-                hideTypingIndicator();
-                // Fall back to rule-based responses
-            }
-        }
-        
-        // If NLP is disabled or failed, use the original rule-based responses
         showTypingIndicator();
         
-        // Simulate typing delay
-        setTimeout(() => {
-            hideTypingIndicator();
-            
-            // Original rule-based processing
-            const messageLower = message.toLowerCase();
-            
-            // Detect user mood from message
-            detectMood(messageLower);
-            
-            // Check for specific knowledge questions first
-            if (messageLower.includes('what time is it') || messageLower.includes('current time')) {
-                const now = new Date();
-                const timeString = now.toLocaleTimeString();
-                sendBotMessage(`The current time is ${timeString}. Time is our most valuable resource - use it wisely! `);
+        try {
+            // Update persona based on time and mood
+            setChatbotPersona();
+
+            // Check for hidden triggers
+            const triggerResponse = checkHiddenTriggers(message);
+            if (triggerResponse) {
+                sendBotMessage(triggerResponse);
                 return;
             }
-            
-            if (messageLower.includes('what day is') || messageLower.includes('what date is')) {
-                const now = new Date();
-                const dateString = now.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-                sendBotMessage(`Today is ${dateString}. Each new day is a fresh start! `);
+
+            // Check for archetype selection
+            if (message.toLowerCase().includes('archetype')) {
+                const archetypes = Object.keys(productivityArchetypes)
+                    .map(key => `${productivityArchetypes[key].name}`);
+                sendBotMessage(`Choose your productivity style:\n${archetypes.join('\n')}`);
                 return;
             }
-            
-            // Check for knowledge base items
-            for (const [key, value] of Object.entries(chatbotResponses.knowledgeBase)) {
-                if (messageLower.includes(key)) {
-                    sendBotMessage(value);
-                    return;
-                }
-            }
-            
-            if (messageLower.includes('pomodoro timer') || messageLower.includes('start pomodoro')) {
-                sendBotMessage("I'll help you start a Pomodoro session! The timer tab is available in the app. Would you like me to explain how to use it effectively? ");
+
+            // First check for mood and respond with persona-appropriate response
+            const moodResponse = detectMoodAndRespond(message);
+            if (moodResponse) {
+                sendBotMessage(`${chatbotState.currentPersona.name}: ${moodResponse}`);
                 return;
             }
-            
-            if (messageLower.includes('how to use this app') || messageLower.includes('app features') || messageLower.includes('what can this app do')) {
-                sendAppFeatures();
-                return;
+
+            // Process message based on keywords with persona-appropriate responses
+            if (message.toLowerCase().includes('help')) {
+                sendBotMessage(`${chatbotState.currentPersona.name}: I'm here to make productivity fun! Need task management, time tracking, or just a motivation boost? I've got jokes too - they're mostly about deadlines, but their timing is perfect! 😉`);
+            } else if (containsAny(message.toLowerCase(), ['hello', 'hi', 'hey'])) {
+                sendBotMessage(`${chatbotState.currentPersona.name}: ${getRandomResponse(chatbotState.currentPersona.greetings)}`);
+            } else if (containsAny(message.toLowerCase(), ['procrastinate', 'procrastinating', 'putting off'])) {
+                sendBotMessage(getPersonaResponse('procrastination'));
+            } else if (containsAny(message.toLowerCase(), ['motivate', 'inspire', 'encourage'])) {
+                sendBotMessage(getPersonaResponse('motivation'));
+            } else if (containsAny(message.toLowerCase(), ['focus', 'concentrate', 'distracted'])) {
+                const response = `${chatbotState.currentPersona.name}: Finding focus is like finding matching socks - sometimes tricky, but so satisfying when it happens! 🧦 Need some concentration techniques?`;
+                sendBotMessage(response);
+            } else {
+                // Persona-based default response
+                const defaultResponses = [
+                    `${chatbotState.currentPersona.name}: Ready to make productivity fun? I've got the enthusiasm of a puppy with a new toy! 🐕`,
+                    `${chatbotState.currentPersona.name}: Need a productivity partner? I'm like a GPS for your goals - except I won't tell you to make a U-turn in 500 feet! 🗺️`,
+                    `${chatbotState.currentPersona.name}: Let's tackle those tasks! I promise I'm more helpful than a chocolate-powered motivation engine! 🍫`
+                ];
+                sendBotMessage(getRandomResponse(defaultResponses));
             }
-            
-            if (messageLower.includes('best productivity technique') || messageLower.includes('most effective technique')) {
-                sendBotMessage("The most effective productivity technique depends on your personal style and the task at hand. Research shows the Pomodoro Technique works well for focus, GTD for organization, and time blocking for planning. Which aspect of productivity are you struggling with? I can recommend a specific technique for your needs. ");
-                return;
-            }
-            
-            if (messageLower.includes('focus tips') || messageLower.includes('how to focus') || messageLower.includes('improve focus')) {
-                sendBotMessage(getRandomResponse(chatbotResponses.focus));
-                return;
-            }
-            
-            if (messageLower.includes('procrastination') || messageLower.includes('procrastinating') || messageLower.includes('putting off')) {
-                sendBotMessage(getRandomResponse(chatbotResponses.procrastination));
-                return;
-            }
-            
-            if (messageLower.includes('motivation') || messageLower.includes('motivate me') || messageLower.includes('feeling lazy')) {
-                sendBotMessage(getRandomResponse(chatbotResponses.motivation));
-                return;
-            }
-            
-            // Check for specific requests (original logic)
-            if (containsAny(messageLower, ['hello', 'hi', 'hey', 'greetings'])) {
-                sendBotMessage(getRandomResponse(chatbotResponses.greeting));
-            }
-            else if (containsAny(messageLower, ['bye', 'goodbye', 'see you', 'farewell'])) {
-                sendBotMessage(getRandomResponse(chatbotResponses.farewell));
-            }
-            else if (containsAny(messageLower, ['motivate', 'motivation', 'inspire', 'quote'])) {
-                sendMotivationalQuote();
-            }
-            else if (containsAny(messageLower, ['joke', 'funny', 'laugh', 'humor'])) {
-                sendBotMessage(getRandomResponse(chatbotResponses.jokes));
-            }
-            else if (containsAny(messageLower, ['gif', 'animation'])) {
-                sendGif('motivation');
-            }
-            else if (containsAny(messageLower, ['pomodoro', 'timer', 'focus technique'])) {
-                sendBotMessage(chatbotResponses.techniques.pomodoro);
-            }
-            else if (containsAny(messageLower, ['gtd', 'getting things done', 'organize tasks'])) {
-                sendBotMessage(chatbotResponses.techniques.gtd);
-            }
-            else if (containsAny(messageLower, ['eisenhower', 'priority matrix', 'prioritize'])) {
-                sendBotMessage(chatbotResponses.techniques.eisenhower);
-                
-                // Increment productivity advice count
-                chatbotState.productivityAdviceCount++;
-                localStorage.setItem('productivityAdviceCount', chatbotState.productivityAdviceCount.toString());
-                
-                // Check for productivity seeker badge
-                if (chatbotState.productivityAdviceCount >= 5) {
-                    if (typeof unlockBadge === 'function') {
-                        unlockBadge('productivity-seeker');
-                    }
-                }
-            }
-            else if (containsAny(messageLower, ['break', 'rest', 'pause', 'tired'])) {
-                sendBotMessage(getRandomResponse(chatbotResponses.breaks));
-            }
-            else if (containsAny(messageLower, ['task', 'todo', 'to-do', 'pending'])) {
-                checkPendingTasks();
-            }
-            else if (containsAny(messageLower, ['time block', 'schedule', 'plan my day'])) {
-                suggestTimeBlocking();
-            }
-            else if (containsAny(messageLower, ['stressed', 'anxious', 'overwhelmed', 'pressure'])) {
-                chatbotState.userMood = 'stressed';
-                sendBotMessage(getRandomResponse(chatbotResponses.moodResponses.stressed));
-            }
-            else if (containsAny(messageLower, ['unmotivated', 'lazy', 'procrastinating', 'can\'t start'])) {
-                chatbotState.userMood = 'unmotivated';
-                sendBotMessage(getRandomResponse(chatbotResponses.moodResponses.unmotivated));
-            }
-            else if (containsAny(messageLower, ['happy', 'great', 'awesome', 'productive'])) {
-                chatbotState.userMood = 'happy';
-                sendBotMessage(getRandomResponse(chatbotResponses.moodResponses.happy));
-            }
-            else {
-                // Try to extract a question
-                const questionWords = ['what', 'how', 'why', 'when', 'where', 'who', 'which', 'can', 'could', 'would', 'should', 'is', 'are', 'do', 'does'];
-                const isQuestion = questionWords.some(word => messageLower.startsWith(word) || messageLower.includes(` ${word} `));
-                
-                if (isQuestion) {
-                    // Try to provide a more specific answer based on keywords
-                    if (messageLower.includes('productivity') && messageLower.includes('tip')) {
-                        const tips = [
-                            "One of my favorite productivity tips is the 'touch it once' principle. When you encounter an email, message, or task, deal with it immediately rather than coming back to it multiple times. ",
-                            "Try the 'two-minute rule': if a task takes less than two minutes, do it immediately rather than scheduling it for later. It prevents small tasks from piling up! ",
-                            "Block distracting websites during your focus time. Tools like Freedom or Cold Turkey can help you stay on track. ",
-                            "Keep a 'done list' alongside your to-do list. Seeing what you've accomplished provides motivation to keep going! "
-                        ];
-                        sendBotMessage(tips[Math.floor(Math.random() * tips.length)]);
-                    }
-                    else if (messageLower.includes('work') && messageLower.includes('from home')) {
-                        sendBotMessage("Working from home effectively requires creating boundaries. Set up a dedicated workspace, establish a routine, take regular breaks, and communicate clearly with both colleagues and family about your work hours. Also, get dressed as if you're going to the office - it puts your brain in 'work mode'! ");
-                    }
-                    else if (messageLower.includes('morning routine') || (messageLower.includes('start') && messageLower.includes('day'))) {
-                        sendBotMessage("The most productive morning routines typically avoid checking email/social media first thing, include some physical movement, a healthy breakfast, and time for planning your day. Many successful people also include meditation or journaling. What specific part of your morning routine would you like to improve? ");
-                    }
-                    else if (messageLower.includes('night routine') || (messageLower.includes('end') && messageLower.includes('day'))) {
-                        sendBotMessage("A good evening routine should help you wind down and prepare for the next day. Try to stop screen time 1 hour before bed, write down your top 3 priorities for tomorrow, and practice a relaxation technique like deep breathing or light stretching. This helps your brain transition to sleep mode! ");
-                    }
-                    else {
-                        // If we can't provide a specific answer, respond based on mood
-                        sendBotMessage(getRandomResponse(chatbotResponses.fallback));
-                    }
-                } else {
-                    // If no specific pattern is matched, respond based on user's mood
-                    respondBasedOnMood();
-                }
-            }
-        }, 1000);
+        } catch (error) {
+            console.error('Error processing message:', error);
+            sendBotMessage(`${chatbotState.currentPersona.name}: Oops! Even AI has its moments! Let's pretend that was a planned comedy routine! 🎭`);
+        }
+        
+        hideTypingIndicator();
     }
-    
+
     // Send App Features
     function sendAppFeatures() {
         const features = `This productivity app has several powerful features:
@@ -537,7 +524,7 @@ Which feature would you like to learn more about?`;
 
     // Send Motivational Quote
     function sendMotivationalQuote() {
-        const quote = getRandomResponse(chatbotResponses.quotes);
+        const quote = getRandomResponse(chatbotResponses.encouragement);
         sendBotMessage(quote);
         
         // Increment quote count

@@ -305,7 +305,7 @@ function renderBadges() {
     
     // Render each badge
     allBadges.forEach(badge => {
-        const isUnlocked = userBadges.includes(badge.id);
+        const isUnlocked = userBadges.some(b => b.id === badge.id);
         const badgeElement = createBadgeElement(badge, isUnlocked);
         badgesContainer.appendChild(badgeElement);
     });
@@ -444,10 +444,15 @@ function unlockBadge(badgeId) {
     if (!badgeDefinitions[badgeId]) return;
     
     // Check if badge is already unlocked
-    if (userBadges.includes(badgeId)) return;
+    if (userBadges.some(b => b.id === badgeId)) return;
     
-    // Add badge to user badges
-    userBadges.push(badgeId);
+    // Add badge to user badges with timestamp
+    const unlockData = {
+        id: badgeId,
+        unlockedAt: new Date().toISOString()
+    };
+    
+    userBadges.push(unlockData);
     
     // Save to localStorage
     localStorage.setItem('userBadges', JSON.stringify(userBadges));
@@ -457,6 +462,10 @@ function unlockBadge(badgeId) {
     
     // Update badges display
     renderBadges();
+    
+    // Emit badge unlock event
+    const event = new CustomEvent('badgeUnlocked', { detail: { badgeId, badge: badgeDefinitions[badgeId] } });
+    document.dispatchEvent(event);
 }
 
 // Show Badge Notification
@@ -464,63 +473,40 @@ function showBadgeNotification(badgeId) {
     const badge = badgeDefinitions[badgeId];
     if (!badge) return;
     
-    // Create notification element
     const notification = document.createElement('div');
-    notification.className = 'badge-notification';
+    notification.className = 'badge-notification animate__animated animate__fadeInUp';
     
     notification.innerHTML = `
-        <div class="badge-notification-icon">
-            <img src="assets/images/badge-decoration-${badge.decoration}.svg" class="badge-decoration" alt="Badge decoration">
-            <div class="badge-circle badge-${badge.color}">
+        <div class="badge-notification-content">
+            <div class="badge-icon">
                 <i class="fas ${badge.icon}"></i>
             </div>
-        </div>
-        <div class="badge-notification-content">
-            <h3 class="badge-notification-title">Badge Unlocked!</h3>
-            <p class="badge-notification-message">You've earned the "${badge.name}" badge</p>
-        </div>
-        <div class="badge-notification-close">
-            <i class="fas fa-times"></i>
+            <div class="badge-info">
+                <h3>New Badge Unlocked!</h3>
+                <h4>${badge.name}</h4>
+                <p>${badge.description}</p>
+            </div>
         </div>
     `;
     
-    // Add to document
     document.body.appendChild(notification);
     
-    // Add close button event listener
-    const closeBtn = notification.querySelector('.badge-notification-close');
-    closeBtn.addEventListener('click', () => {
-        notification.remove();
-    });
+    // Play achievement sound
+    const achievementSound = new Audio('assets/sounds/achievement.mp3');
+    achievementSound.play().catch(() => {}); // Ignore if sound fails to play
     
-    // Auto-remove after 5 seconds
+    // Remove notification after animation
     setTimeout(() => {
-        if (notification.parentNode) {
-            notification.classList.add('fade-out');
-            setTimeout(() => {
-                if (notification.parentNode) {
-                    notification.remove();
-                }
-            }, 300);
-        }
+        notification.classList.remove('animate__fadeInUp');
+        notification.classList.add('animate__fadeOutDown');
+        setTimeout(() => notification.remove(), 1000);
     }, 5000);
-    
-    // Play sound
-    const audio = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-achievement-bell-600.mp3');
-    audio.volume = 0.5;
-    audio.play();
 }
 
-// Get User Badge Unlock Date
+// Get User Badge Date
 function getUserBadgeDate(badgeId) {
     const badge = userBadges.find(b => b.id === badgeId);
-    if (!badge || !badge.unlockedAt) return 'Unknown date';
-    
-    return new Date(badge.unlockedAt).toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-    });
+    return badge ? new Date(badge.unlockedAt) : null;
 }
 
 // Get Badge Progress

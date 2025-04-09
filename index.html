@@ -202,10 +202,7 @@
                                         <input type="text" id="task-batch" placeholder="Group similar tasks">
                                     </div>
                                 </div>
-                                <div class="form-group checkbox-group">
-                                    <input type="checkbox" id="task-inbox">
-                                    <label for="task-inbox">Add to GTD Inbox</label>
-                                </div>
+                                <input type="hidden" id="task-id">
                                 <div class="form-actions">
                                     <button type="button" class="cancel-btn">Cancel</button>
                                     <button type="submit" class="save-btn">Save Task</button>
@@ -326,8 +323,8 @@
                                         <option value="night-sounds">Night Sounds</option>
                                     </select>
                                 </div>
-                                <audio id="lofi-player" loop preload="none">
-                                    <!-- Source will be set dynamically by JavaScript -->
+                                <audio id="lofi-player" loop preload="auto">
+                                    <source src="" type="audio/mpeg">
                                     Your browser does not support the audio element.
                                 </audio>
                             </div>
@@ -387,31 +384,20 @@
                 <section id="badges" class="content-section">
                     <div class="section-header">
                         <h2>Achievement Badges</h2>
+                        <div class="badge-filters">
+                            <button class="badge-filter active" data-category="all">All</button>
+                            <button class="badge-filter" data-category="tasks">Tasks</button>
+                            <button class="badge-filter" data-category="pomodoro">Pomodoro</button>
+                            <button class="badge-filter" data-category="diary">Diary</button>
+                            <button class="badge-filter" data-category="special">Special</button>
+                        </div>
                     </div>
                     <div class="badges-container">
-                        <div class="badges-category">
-                            <h3>Streak & Consistency</h3>
-                            <div class="badges-grid">
-                                <!-- Badges will be added dynamically -->
-                            </div>
-                        </div>
-                        <div class="badges-category">
-                            <h3>Task Completion</h3>
-                            <div class="badges-grid">
-                                <!-- Badges will be added dynamically -->
-                            </div>
-                        </div>
-                        <div class="badges-category">
-                            <h3>Achievements & Milestones</h3>
-                            <div class="badges-grid">
-                                <!-- Badges will be added dynamically -->
-                            </div>
-                        </div>
-                        <div class="badges-category">
-                            <h3>Special & Fun</h3>
-                            <div class="badges-grid">
-                                <!-- Badges will be added dynamically -->
-                            </div>
+                        <!-- Badges will be added here dynamically -->
+                        <div class="empty-state">
+                            <img src="assets/images/empty-badges.svg" alt="No badges yet">
+                            <h3>No badges unlocked yet!</h3>
+                            <p>Complete tasks and use features to earn achievement badges.</p>
                         </div>
                     </div>
                 </section>
@@ -423,7 +409,7 @@
                     </div>
                     <div class="analytics-container">
                         <div class="analytics-cards">
-                            <div class="analytics-card">
+                            <div class="analytics-card" data-type="completed-tasks">
                                 <div class="card-icon">
                                     <i class="fas fa-check-circle"></i>
                                 </div>
@@ -432,7 +418,7 @@
                                     <p class="card-value">0</p>
                                 </div>
                             </div>
-                            <div class="analytics-card">
+                            <div class="analytics-card" data-type="pending-tasks">
                                 <div class="card-icon">
                                     <i class="fas fa-hourglass-half"></i>
                                 </div>
@@ -441,16 +427,16 @@
                                     <p class="card-value">0</p>
                                 </div>
                             </div>
-                            <div class="analytics-card">
+                            <div class="analytics-card" data-type="focus-time">
                                 <div class="card-icon">
                                     <i class="fas fa-clock"></i>
                                 </div>
                                 <div class="card-content">
                                     <h3>Focus Time</h3>
-                                    <p class="card-value">0 hrs</p>
+                                    <p class="card-value">0h 0m</p>
                                 </div>
                             </div>
-                            <div class="analytics-card">
+                            <div class="analytics-card" data-type="badges-earned">
                                 <div class="card-icon">
                                     <i class="fas fa-trophy"></i>
                                 </div>
@@ -470,19 +456,8 @@
                                 <canvas id="completion-chart"></canvas>
                             </div>
                         </div>
-                        <div class="ai-insights">
-                            <h3>AI Productivity Insights</h3>
-                            <div class="insights-container">
-                                <div class="insight-card">
-                                    <div class="insight-icon">
-                                        <i class="fas fa-lightbulb"></i>
-                                    </div>
-                                    <div class="insight-content">
-                                        <h4>Start your productivity journey</h4>
-                                        <p>Complete your first task to get personalized insights!</p>
-                                    </div>
-                                </div>
-                            </div>
+                        <div class="insights-container">
+                            <!-- AI insights will be dynamically added here -->
                         </div>
                     </div>
                 </section>
@@ -502,6 +477,26 @@
                     </div>
                     <div class="diary-container">
                         <div class="diary-sidebar">
+                            <!-- Add calendar section -->
+                            <div class="diary-calendar">
+                                <div class="calendar-header">
+                                    <button class="prev-month"><i class="fas fa-chevron-left"></i></button>
+                                    <h3 class="calendar-title">April 2025</h3>
+                                    <button class="next-month"><i class="fas fa-chevron-right"></i></button>
+                                </div>
+                                <div class="calendar-weekdays">
+                                    <span>Sun</span>
+                                    <span>Mon</span>
+                                    <span>Tue</span>
+                                    <span>Wed</span>
+                                    <span>Thu</span>
+                                    <span>Fri</span>
+                                    <span>Sat</span>
+                                </div>
+                                <div class="calendar-days">
+                                    <!-- Days will be populated by JavaScript -->
+                                </div>
+                            </div>
                             <div class="diary-search">
                                 <input type="text" placeholder="Search journal...">
                                 <i class="fas fa-search"></i>

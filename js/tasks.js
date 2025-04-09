@@ -38,6 +38,7 @@ function initTaskEventListeners() {
         closeModal.addEventListener('click', closeTaskModal);
     }
     
+    // Cancel button
     if (cancelBtn) {
         cancelBtn.addEventListener('click', closeTaskModal);
     }
@@ -56,7 +57,7 @@ function initTaskEventListeners() {
             btn.addEventListener('click', () => {
                 const filter = btn.getAttribute('data-filter');
                 setActiveFilter(filter);
-                renderTasks();
+                filterTasks();
             });
         });
     }
@@ -79,139 +80,79 @@ function initTaskEventListeners() {
 
 // Open Task Modal
 function openTaskModal(taskId = null) {
+    if (!taskModal) return;
+    
     // Reset form
     taskForm.reset();
+    document.getElementById('task-id').value = '';
+    modalTitle.textContent = 'Add New Task';
     
+    // If editing existing task
     if (taskId) {
-        // Edit mode
         const task = tasks.find(t => t.id === taskId);
         if (task) {
             modalTitle.textContent = 'Edit Task';
+            document.getElementById('task-id').value = taskId;
             document.getElementById('task-title').value = task.title;
             document.getElementById('task-description').value = task.description || '';
-            document.getElementById('estimated-time').value = task.estimatedTime;
-            document.getElementById('task-priority').value = task.priority;
-            document.getElementById('task-category').value = task.category;
-            
-            // Set additional fields if they exist
-            if (document.getElementById('task-impact')) {
-                document.getElementById('task-impact').value = task.impact || 'medium';
-            }
-            
-            if (document.getElementById('task-batch')) {
-                document.getElementById('task-batch').value = task.batch || '';
-            }
-            
-            if (document.getElementById('task-difficulty')) {
-                document.getElementById('task-difficulty').value = task.difficulty || 'medium';
-            }
-            
-            editingTaskId = taskId;
+            document.getElementById('estimated-time').value = task.estimatedTime || 25;
+            document.getElementById('task-priority').value = task.priority || 'medium';
+            document.getElementById('task-category').value = task.category || 'other';
+            document.getElementById('task-impact').value = task.impact || 'medium';
+            document.getElementById('task-difficulty').value = task.difficulty || 'medium';
+            document.getElementById('task-batch').value = task.batch || '';
         }
-    } else {
-        // Add mode
-        modalTitle.textContent = 'Add New Task';
-        editingTaskId = null;
     }
     
-    // Show modal with animation
+    // Show modal
     taskModal.classList.add('active');
-    
-    // Animate modal content
-    anime({
-        targets: '.modal-content',
-        translateY: [20, 0],
-        opacity: [0, 1],
-        duration: 600,
-        easing: 'easeOutExpo'
-    });
+    document.getElementById('task-title').focus();
 }
 
 // Close Task Modal
 function closeTaskModal() {
-    // Animate modal closing
-    anime({
-        targets: '.modal-content',
-        translateY: [0, 20],
-        opacity: [1, 0],
-        duration: 500,
-        easing: 'easeInOutSine',
-        complete: function() {
-            taskModal.classList.remove('active');
-        }
-    });
+    if (!taskModal) return;
+    taskModal.classList.remove('active');
+    taskForm.reset();
+    document.getElementById('task-id').value = '';
 }
 
 // Save Task
 function saveTask() {
-    const title = document.getElementById('task-title').value.trim();
-    const description = document.getElementById('task-description').value.trim();
-    const estimatedTime = parseInt(document.getElementById('estimated-time').value);
-    const priority = document.getElementById('task-priority').value;
-    const category = document.getElementById('task-category').value;
-    
-    // Get additional fields if they exist
-    const impact = document.getElementById('task-impact') ? 
-                  document.getElementById('task-impact').value : 'medium';
-    
-    const batch = document.getElementById('task-batch') ? 
-                document.getElementById('task-batch').value : '';
-    
-    const difficulty = document.getElementById('task-difficulty') ? 
-                     document.getElementById('task-difficulty').value : 'medium';
-    
-    const isInbox = document.getElementById('task-inbox') ? 
-                  document.getElementById('task-inbox').checked : false;
-    
-    if (!title) {
+    const taskTitle = document.getElementById('task-title').value.trim();
+    if (!taskTitle) {
         showNotification('Error', 'Task title is required', 'error');
         return;
     }
     
-    if (editingTaskId) {
-        // Update existing task
-        const taskIndex = tasks.findIndex(t => t.id === editingTaskId);
-        if (taskIndex !== -1) {
-            tasks[taskIndex] = {
-                ...tasks[taskIndex],
-                title,
-                description,
-                estimatedTime,
-                priority,
-                category,
-                impact,
-                batch,
-                difficulty,
-                isInbox,
-                updatedAt: new Date().toISOString()
-            };
-            showNotification('Success', 'Task updated successfully', 'success');
-        }
-    } else {
-        // Add new task
-        const newTask = {
-            id: generateId(),
-            title,
-            description,
-            estimatedTime,
-            priority,
-            category,
-            impact,
-            batch,
-            difficulty,
-            isInbox,
-            completed: false,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString()
-        };
-        
-        tasks.unshift(newTask);
-        showNotification('Success', 'Task added successfully', 'success');
-        
+    const taskId = document.getElementById('task-id').value || generateId();
+    const isNewTask = !document.getElementById('task-id').value;
+    
+    const task = {
+        id: taskId,
+        title: taskTitle,
+        description: document.getElementById('task-description').value.trim(),
+        estimatedTime: parseInt(document.getElementById('estimated-time').value) || 25,
+        priority: document.getElementById('task-priority').value,
+        category: document.getElementById('task-category').value,
+        impact: document.getElementById('task-impact').value,
+        difficulty: document.getElementById('task-difficulty').value,
+        batch: document.getElementById('task-batch').value,
+        completed: false,
+        createdAt: isNewTask ? new Date().toISOString() : tasks.find(t => t.id === taskId).createdAt,
+        updatedAt: new Date().toISOString()
+    };
+    
+    // Add or update task
+    const taskIndex = tasks.findIndex(t => t.id === taskId);
+    if (taskIndex === -1) {
+        tasks.unshift(task); // Add new task at the beginning
         // Check for first task badge
         if (tasks.length === 1) {
-            awardBadge('first-step');
+            unlockBadge('first-step');
         }
+    } else {
+        tasks[taskIndex] = task;
     }
     
     // Save to localStorage
@@ -220,6 +161,102 @@ function saveTask() {
     // Close modal and render tasks
     closeTaskModal();
     renderTasks();
+    
+    // Show notification
+    showNotification(
+        isNewTask ? 'Task Created' : 'Task Updated',
+        `"${task.title}" has been ${isNewTask ? 'created' : 'updated'}`,
+        'success'
+    );
+    
+    // Check for achievements
+    checkCompletionAchievements();
+}
+
+// Toggle Task Completion
+function toggleTaskCompletion(taskId) {
+    const taskIndex = tasks.findIndex(t => t.id === taskId);
+    if (taskIndex === -1) return;
+    
+    const task = tasks[taskIndex];
+    task.completed = !task.completed;
+    task.updatedAt = new Date().toISOString();
+    
+    // Update task in array
+    tasks[taskIndex] = task;
+    
+    // Save to localStorage
+    saveTasks();
+    
+    // Update UI
+    const taskElement = document.querySelector(`.task-item[data-id="${taskId}"]`);
+    if (taskElement) {
+        if (task.completed) {
+            taskElement.classList.add('completed');
+            // Animate completion
+            const checkmark = taskElement.querySelector('.checkmark');
+            animateTaskComplete(taskElement, checkmark);
+        } else {
+            taskElement.classList.remove('completed');
+            // Remove strike-through with animation
+            anime({
+                targets: taskElement.querySelector('.task-title'),
+                textDecoration: 'none',
+                opacity: 1,
+                duration: 400,
+                easing: 'easeOutSine'
+            });
+        }
+    }
+    
+    // Show notification
+    showNotification(
+        task.completed ? 'Task Completed' : 'Task Reopened',
+        `"${task.title}" has been marked as ${task.completed ? 'completed' : 'pending'}`,
+        task.completed ? 'success' : 'info'
+    );
+    
+    // Check for achievements
+    checkCompletionAchievements();
+    
+    // Update analytics
+    updateTaskAnalytics();
+}
+
+// Check completion achievements
+function checkCompletionAchievements() {
+    // Get completed tasks
+    const completedTasks = tasks.filter(t => t.completed);
+    
+    // Task count achievements
+    if (completedTasks.length >= 1) unlockBadge('first-step');
+    if (completedTasks.length >= 5) unlockBadge('task-starter');
+    if (completedTasks.length >= 25) unlockBadge('productivity-pro');
+    if (completedTasks.length >= 100) unlockBadge('master-executor');
+    
+    // Time-based achievements
+    const now = new Date();
+    const hour = now.getHours();
+    
+    if (hour < 9) unlockBadge('early-bird');
+    if (hour >= 22) unlockBadge('night-owl');
+    
+    // Priority achievements
+    const hasHighPriorityCompleted = completedTasks.some(t => t.priority === 'high');
+    if (hasHighPriorityCompleted) unlockBadge('no-more-excuses');
+    
+    // Weekly deadline achievement
+    const today = new Date();
+    const weekStart = new Date(today.setDate(today.getDate() - today.getDay()));
+    const weekEnd = new Date(today.setDate(today.getDate() - today.getDay() + 6));
+    
+    const allWeeklyDeadlinesMet = tasks.every(t => {
+        if (!t.deadline) return true;
+        const deadlineDate = new Date(t.deadline);
+        return !(deadlineDate >= weekStart && deadlineDate <= weekEnd) || t.completed;
+    });
+    
+    if (allWeeklyDeadlinesMet) unlockBadge('deadline-dominator');
 }
 
 // Render Tasks
@@ -338,94 +375,6 @@ function createTaskElement(task) {
     taskElement.addEventListener('dragend', handleDragEnd);
     
     return taskElement;
-}
-
-// Toggle Task Completion
-function toggleTaskCompletion(taskId) {
-    const taskIndex = tasks.findIndex(t => t.id === taskId);
-    
-    if (taskIndex === -1) return;
-    
-    const task = tasks[taskIndex];
-    const wasCompleted = task.completed;
-    task.completed = !wasCompleted;
-    
-    // Update task in array
-    tasks[taskIndex] = {
-        ...task,
-        updatedAt: new Date().toISOString()
-    };
-    
-    // Save to localStorage
-    saveTasks();
-    
-    // Get the task element
-    const taskElement = document.querySelector(`.task-item[data-id="${taskId}"]`);
-    
-    if (taskElement) {
-        if (task.completed) {
-            taskElement.classList.add('completed');
-            
-            // Animate completion
-            const checkmark = taskElement.querySelector('.checkmark');
-            animateTaskComplete(taskElement, checkmark);
-            
-            // Check for achievements
-            checkCompletionAchievements();
-        } else {
-            taskElement.classList.remove('completed');
-            
-            // Remove strike-through with animation
-            anime({
-                targets: taskElement.querySelector('.task-title'),
-                textDecoration: 'none',
-                opacity: 1,
-                duration: 400,
-                easing: 'easeOutSine'
-            });
-        }
-    }
-    
-    // Update analytics
-    updateTaskAnalytics();
-    
-    // Show notification
-    if (task.completed) {
-        showNotification('Task Completed', `"${task.title}" marked as completed`, 'success');
-        
-        // Check if all tasks are completed
-        const allCompleted = tasks.every(t => t.completed);
-        if (allCompleted && tasks.length > 5) {
-            awardBadge('all-clear');
-        }
-        
-        // Check for streak achievements
-        const completedToday = tasks.filter(t => {
-            const updatedDate = new Date(t.updatedAt).toDateString();
-            const today = new Date().toDateString();
-            return t.completed && updatedDate === today;
-        }).length;
-        
-        if (completedToday === 5) {
-            awardBadge('productive-day');
-        }
-        
-        if (completedToday === 10) {
-            awardBadge('super-productive');
-        }
-        
-        // Check for high impact task completion
-        if (task.impact === 'high') {
-            awardBadge('high-impact');
-        }
-        
-        // Check for eat the frog completion
-        if (task.priority === 'high' && task.difficulty === 'high') {
-            awardBadge('frog-eater');
-        }
-    } else {
-        showNotification('Task Reopened', `"${task.title}" marked as pending`, 'info');
-    }
 }
 
 // Delete Task
@@ -595,23 +544,65 @@ function handleDrop(e) {
     // Implementation can be added later if needed
 }
 
-// Check completion achievements
-function checkCompletionAchievements() {
-    // This function can be implemented later if needed
+// Unlock badge
+function unlockBadge(badgeId) {
+    // Get existing badges
+    const earnedBadges = JSON.parse(localStorage.getItem('earnedBadges')) || [];
+    
+    // Check if badge is already earned
+    if (!earnedBadges.includes(badgeId)) {
+        // Add new badge
+        earnedBadges.push(badgeId);
+        
+        // Save to localStorage
+        localStorage.setItem('earnedBadges', JSON.stringify(earnedBadges));
+        
+        // Show badge notification
+        const badge = badgeDefinitions[badgeId];
+        if (badge) {
+            showBadgeNotification(badgeId);
+        }
+        
+        // Update analytics if needed
+        updateTaskAnalytics();
+    }
+}
+
+// Show badge notification
+function showBadgeNotification(badgeId) {
+    const badge = badgeDefinitions[badgeId];
+    if (!badge) return;
+    
+    const notification = document.createElement('div');
+    notification.className = 'badge-notification animate__animated animate__fadeInUp';
+    notification.innerHTML = `
+        <div class="badge-notification-content">
+            <div class="badge-icon">
+                <i class="fas ${badge.icon} fa-2x"></i>
+            </div>
+            <div class="badge-info">
+                <h3>New Badge Unlocked!</h3>
+                <h4>${badge.name}</h4>
+                <p>${badge.description}</p>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(notification);
+    
+    // Remove notification after 5 seconds
+    setTimeout(() => {
+        notification.classList.remove('animate__fadeInUp');
+        notification.classList.add('animate__fadeOutDown');
+        setTimeout(() => {
+            notification.remove();
+        }, 1000);
+    }, 5000);
 }
 
 // Update task analytics
 function updateTaskAnalytics() {
     // This function can be implemented later if needed
-}
-
-// Award badge
-function awardBadge(badgeId) {
-    // Check if badges.js has the function
-    if (typeof addBadge === 'function') {
-        addBadge(badgeId);
-    }
-    // Otherwise, we can implement a simple version here if needed
 }
 
 // Show notification
